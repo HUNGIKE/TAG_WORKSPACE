@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.jenetics.BitChromosome"/>
+<fullyQualifiedTypeName name="org.jenetics.Genotype"/>
+<fullyQualifiedTypeName name="org.jenetics.BitGene"/>
+<fullyQualifiedTypeName name="org.jenetics.util.Factory"/>
+<fullyQualifiedTypeName name="org.jenetics.DoubleChromosome"/>
+<fullyQualifiedTypeName name="org.jenetics.engine.Engine"/>
+<fullyQualifiedTypeName name="org.jenetics.engine.EvolutionResult"/>
+<fullyQualifiedTypeName name="java.util.LinkedList"/>
+<fullyQualifiedTypeName name="org.jenetics.DoubleGene"/>
+<fullyQualifiedTypeName name="org.neuroph.nnet.Perceptron"/>
+<fullyQualifiedTypeName name="org.neuroph.nnet.MultiLayerPerceptron"/>
+<fullyQualifiedTypeName name="tag.Data.Point"/>
+<fullyQualifiedTypeName name="player.SimplePlayer"/>
+<fullyQualifiedTypeName name="tag.Host"/>
+<fullyQualifiedTypeName name="tag.Player"/>
+<fullyQualifiedTypeName name="org.neuroph.core.NeuralNetwork"/>
+</qualifiedTypeNameHistroy>

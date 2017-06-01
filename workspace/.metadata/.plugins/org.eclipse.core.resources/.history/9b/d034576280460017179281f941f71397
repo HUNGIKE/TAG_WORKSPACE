@@ -1,0 +1,33 @@
+package tag;
+
+public class Host {
+	Data data;
+	Viewer viewer;
+	Player[] player=new Player[2];
+	
+	
+	
+	public Host(){
+		this.data=new Data(30,30);
+		this.viewer=new Viewer(this.data);
+	}
+	
+	
+	public void run(){
+		int p=0;
+		
+		while(true){
+			p=(p+1)%2;
+			Player ply=this.player[p];
+			
+			Data.Point retP=ply.play(this.viewer);
+			this.data.setValue(retP.x,retP.y,p+1);
+			
+		}
+		
+		
+		
+		
+	}
+
+}

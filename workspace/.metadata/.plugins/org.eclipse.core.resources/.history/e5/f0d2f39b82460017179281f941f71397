@@ -1,0 +1,26 @@
+package player;
+
+import tag.Data.Point;
+
+import org.neuroph.core.NeuralNetwork;
+import org.neuroph.nnet.MultiLayerPerceptron;
+
+import tag.Player;
+import tag.Viewer;
+
+public class SimplePlayer extends Player {
+	private static NeuralNetwork neuralNetwork;
+	public SimplePlayer(){
+		this.neuralNetwork=new MultiLayerPerceptron(30*30,2,30*30);
+		
+	}
+	
+	
+
+	@Override
+	public Point play(Viewer v) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

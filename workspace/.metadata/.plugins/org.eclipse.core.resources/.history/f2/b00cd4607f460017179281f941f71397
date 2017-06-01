@@ -1,0 +1,20 @@
+package tag;
+
+public class Host {
+	Data data;
+	
+	
+	public Host(){
+		this.data=new Data(30,30);
+	}
+	
+	
+	public void run(){
+		
+		
+		
+		
+		
+	}
+
+}

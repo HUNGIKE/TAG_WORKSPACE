@@ -1,0 +1,18 @@
+package tag.trainning;
+
+import org.jenetics.DoubleGene;
+import org.jenetics.Genotype;
+
+public class Training1 {
+	
+	
+	public Double eval(Genotype<DoubleGene> gt){
+		
+		return null;
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+}

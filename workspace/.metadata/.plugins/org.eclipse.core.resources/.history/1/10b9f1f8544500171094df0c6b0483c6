@@ -1,0 +1,95 @@
+package sandbox;
+
+import java.util.LinkedList;
+
+import org.jenetics.BitChromosome;
+import org.jenetics.BitGene;
+import org.jenetics.Chromosome;
+import org.jenetics.DoubleChromosome;
+import org.jenetics.DoubleGene;
+import org.jenetics.Genotype;
+import org.jenetics.engine.Engine;
+import org.jenetics.engine.EvolutionResult;
+import org.jenetics.util.Factory;
+import org.neuroph.core.NeuralNetwork;
+import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.nnet.Perceptron;
+
+public class test {
+	
+	private static NeuralNetwork neuralNetwork = new MultiLayerPerceptron(2,3,1);
+	
+	private static Double eval(Genotype<DoubleGene> gt) {
+		synchronized(test.class){
+			neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
+			
+			double bias=0;
+			
+			for(int i=0;i<5000;i++){
+				double x1=Math.random()*100,x2=Math.random()*100;
+				double y=x1*x2;
+				
+				neuralNetwork.setInput(x1/100d,x2/100d);
+				neuralNetwork.calculate();
+				double output=neuralNetwork.getOutput()[0];
+				
+				
+				bias+=( Math.abs(output*10000-y) );
+				
+			}
+			
+			return -1d*bias;
+		}
+		
+		
+		
+		
+		
+        //return (int) gt.getChromosome().as(DoubleChromosome.class).byteValue(2);
+    }
+	
+
+	public static void main(String[] args) {
+		
+		
+		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
+		
+		for(int i=0;i<300;i++){
+			
+			list.add( DoubleChromosome.of(-1000,1000,13) );
+			
+		}
+		
+		
+		
+		Factory<Genotype<DoubleGene>> gtf = Genotype.of(list );
+	
+		
+		
+		Engine<DoubleGene, Double> engine = Engine.builder(test::eval, gtf).build();
+	 
+	
+		
+		Genotype<DoubleGene> result = engine.stream().limit(500).collect(EvolutionResult.toBestGenotype());
+	 
+	    System.out.println("Hello World:\n" + result);
+
+	    
+
+		neuralNetwork.setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
+	    for(int j=0;j<10;j++){
+
+			double x1=Math.random()*100,x2=Math.random()*100;
+	    	double y1=x1*x2;
+	    	
+	    	neuralNetwork.setInput(x1/100d,x2/100d);
+	    	neuralNetwork.calculate();
+	    	System.out.println("x1="+x1+" , x2="+x2);
+	    	System.out.println("output="+(neuralNetwork.getOutput()[0]*10000)+", y1="+y1);
+	    	System.out.println();
+	    }
+		
+		
+	}
+
+}

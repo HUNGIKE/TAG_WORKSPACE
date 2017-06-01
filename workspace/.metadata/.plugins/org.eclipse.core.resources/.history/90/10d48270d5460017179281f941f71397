@@ -1,0 +1,53 @@
+package tag.trainning;
+
+import java.util.LinkedList;
+
+import org.jenetics.DoubleChromosome;
+import org.jenetics.DoubleGene;
+import org.jenetics.Genotype;
+import org.jenetics.engine.Engine;
+import org.jenetics.util.Factory;
+
+import tag.Host;
+import tag.player.SimplePlayer;
+
+
+public class Training1 {
+	private Factory<Genotype<DoubleGene>> gtf;	
+	private Engine<DoubleGene, Double> engine;
+	
+	private Host host;
+	
+	public synchronized Double eval(Genotype<DoubleGene> gt){
+		
+		
+		
+		
+		//neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
+		
+		
+		
+		return null;
+	}
+	
+	public Training1(){
+		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
+		
+		for(int i=0;i<300;i++){
+			list.add( DoubleChromosome.of(-100,100,12) );
+		}
+		
+		this.gtf=Genotype.of(list );
+		this.engine=Engine.builder(Training1::eval, gtf).build();
+		
+		this.host=new Host();
+		host.setPlayer(0,new SimplePlayer());
+		host.setPlayer(1,new SimplePlayer());
+		
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+}

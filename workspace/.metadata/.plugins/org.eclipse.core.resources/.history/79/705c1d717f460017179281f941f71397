@@ -1,0 +1,21 @@
+package tag;
+
+public class Host {
+	Data data;
+	Viewer viewer;
+	
+	public Host(){
+		this.data=new Data(30,30);
+		this.viewer=new Viewer(this.data);
+	}
+	
+	
+	public void run(){
+		
+		
+		
+		
+		
+	}
+
+}

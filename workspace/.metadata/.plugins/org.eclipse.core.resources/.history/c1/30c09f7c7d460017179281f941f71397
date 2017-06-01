@@ -1,0 +1,13 @@
+package tag;
+
+public class Data {
+	private int width,height;
+	
+	
+	
+	public Data(int width,int height){
+		this.width=width;
+		this.height=height;
+	}
+
+}

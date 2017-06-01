@@ -1,0 +1,12 @@
+package tag;
+
+public class Player {
+	
+	
+	public Data.Point play(Viewer v){
+		
+		return null;
+	}
+	
+
+}

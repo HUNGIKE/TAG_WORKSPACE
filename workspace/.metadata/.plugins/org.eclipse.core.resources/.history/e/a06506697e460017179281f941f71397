@@ -1,0 +1,13 @@
+package tag;
+
+public class Viewer {
+	private Data data;
+	public void setData(Data data){
+		this.data=data;
+	}
+	
+	public int getValue(int x,int y){
+		return this.data.getValue(x, y);
+	}
+
+}

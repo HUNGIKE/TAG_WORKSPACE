@@ -1,0 +1,20 @@
+package tag;
+
+public class Data {
+	private int width,height;
+	private int[][] board;
+	
+	
+	public Data(int width,int height){
+		this.width=width;
+		this.height=height;
+	}
+	
+	private void createBoard(int width,int height){
+		this.board=new int[width][];
+		for(int i=0;i<this.board.length;i++){
+			this.board[i]=new int[height];
+		}
+	}
+
+}

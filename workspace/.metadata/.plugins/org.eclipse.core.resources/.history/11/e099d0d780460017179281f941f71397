@@ -1,0 +1,35 @@
+package tag;
+
+public class Host {
+	Data data;
+	Viewer viewer;
+	Controller controller;
+	Player[] player=new Player[2];
+	
+	
+	
+	public Host(){
+		this.data=new Data(30,30);
+		this.viewer=new Viewer(this.data);
+		this.controller=new Controller(data);
+	}
+	
+	
+	public void run(){
+		int p=0;
+		
+		while( ! this.controller.isGameTerminated() ){
+			p=(p+1)%2;
+			Player ply=this.player[p];
+			
+			Data.Point retP=ply.play(this.viewer);
+			this.data.setValue(retP.x,retP.y,p+1);
+			
+		}
+		
+		
+		
+		
+	}
+
+}
