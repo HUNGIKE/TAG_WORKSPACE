@@ -2,19 +2,22 @@ package tag;
 
 public class Data {
 	private int width,height;
-	private int[][] board;
+	private Grid[][] board;
 	
 	
 	public Data(int width,int height){
 		this.width=width;
 		this.height=height;
-		this.createBoard(width, height);
+		this.createBoard();
 	}
 	
-	private void createBoard(int width,int height){
-		this.board=new int[width][];
+	public void createBoard(){
+		this.board=new Grid[this.width][this.height];
 		for(int i=0;i<this.board.length;i++){
-			this.board[i]=new int[height];
+			this.board[i]=new Grid[this.height];
+			for(int j=0;j<this.board.length;j++){
+				this.board[i][j]=new Grid();
+			}
 		}
 	}
 	
@@ -26,12 +29,16 @@ public class Data {
 		return this.height;
 	}
 	
-	public int getValue(int x,int y){
-		return this.board[x][y];
+	public Grid getGrid(int x,int y){
+		try{
+			return this.board[x][y];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
 	}
 	
-	public void setValue(int x,int y,int value){
-		this.board[x][y]=value;
+	public void setValue(int x,int y,Color color){
+		this.getGrid(x, y).color=color;
 	}
 	
 	
@@ -42,18 +49,43 @@ public class Data {
 			this.y=y;
 		}
 		
+		@Override
+		public boolean equals(Object obj){
+			if( ! (obj instanceof Point) )return false;
+			Point objP=(Point)obj;
+			return objP.x==this.x && objP.y==this.y;
+		}
+		
+		@Override
+		public int hashCode(){
+			return x*1000+y;
+		}
+		
+	}
+	
+	public static class Grid{
+		public Color color;
+		
+	}
+	
+	public static enum Color{
+		BLACK,WHITE 
 	}
 	
 	public void print(){
 		for(int i=0;i<this.width;i++){
 			for(int j=0;j<this.height;j++){
-				System.out.print("  "+this.board[i][j]);
+				try{
+					System.out.print("  "+this.board[i][j].color.ordinal());
+				}catch(Exception e){
+
+					System.out.print("  x");
+				}
 			}
 			System.out.println();
 		}
 		
-		
-		
+		System.out.println("==============");
 		
 	}
 

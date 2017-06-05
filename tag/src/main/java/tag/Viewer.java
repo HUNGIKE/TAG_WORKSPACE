@@ -1,5 +1,8 @@
 package tag;
 
+import tag.Data.Color;
+import tag.Data.Grid;
+
 public class Viewer {
 	private Data data;
 	
@@ -19,8 +22,11 @@ public class Viewer {
 		return this.data.getHeigth();
 	}
 	
+	public Grid getGrid(int x,int y){
+		return this.data.getGrid(x, y);
+	}
 	
-	public int getValue(int x,int y){
-		return this.data.getValue(x, y);
+	public Color getValue(int x,int y){
+		return this.data.getGrid(x, y).color;
 	}
 }

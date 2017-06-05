@@ -1,5 +1,6 @@
 package tag.player;
 
+import tag.Data.Color;
 import tag.Data.Point;
 
 import org.neuroph.core.NeuralNetwork;
@@ -11,7 +12,7 @@ import tag.Viewer;
 public class SimplePlayer extends Player {
 	private static NeuralNetwork neuralNetwork;
 	public SimplePlayer(){
-		this.neuralNetwork=new MultiLayerPerceptron(10*10,100,10*10);
+		this.neuralNetwork=new MultiLayerPerceptron(10*10,10,10,10,10*10);
 		
 	}
 	
@@ -37,13 +38,13 @@ public class SimplePlayer extends Player {
 	private Point getPointFromOutput(Viewer v,double[] output){
 
 		int w=v.getWidth(),h=v.getHeigth();
-		double maxV=0;
+		double maxV=Integer.MIN_VALUE;
 		int maxX=-1,maxY=-1;
 		
 		for(int i=0;i<output.length;i++){
 			int x=i/h , y=i%h;
 			
-			if( v.getValue(x, y)==0 && output[x*h+y]>maxV ){
+			if( v.getValue(x, y)==null && output[x*h+y]>maxV ){
 				maxV=output[x*h+y];
 				maxX=x;maxY=y;
 			}
@@ -60,7 +61,12 @@ public class SimplePlayer extends Player {
 		
 		for(int i=0;i<w*h;i++){
 			int x=i/h , y=i%h;
-			ret[i]=v.getValue(x, y);
+				Color c=v.getValue(x, y);
+				if(c!=null){
+					ret[i]=c.ordinal();
+				}else{
+					ret[i]=-1;
+				}
 		}
 		
 		return ret;

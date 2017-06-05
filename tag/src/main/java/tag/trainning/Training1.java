@@ -10,6 +10,7 @@ import org.jenetics.engine.EvolutionResult;
 import org.jenetics.util.Factory;
 import org.neuroph.core.NeuralNetwork;
 
+import tag.Data.Color;
 import tag.Host;
 import tag.Player;
 import tag.player.SimplePlayer;
@@ -27,19 +28,19 @@ public class Training1 {
 		NeuralNetwork neuralNetwork=this.spl.getNetwork();
 		neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
 		
-		double bias=0;
+
+		double score=0;
 		
-		for(int i=0;i<10000;i++){
-			int score=0;
+		for(int i=0;i<1;i++){
 			
 			this.host.run();
-			//gather score 
-			
-			bias-=score;
+			int blackScore=this.host.getController().getScore(Color.BLACK),
+				whiteScore=this.host.getController().getScore(Color.WHITE);
+			score+=( blackScore - whiteScore );
 			
 		}
 		
-		return bias;
+		return score;
 		
 		
 	}
@@ -47,8 +48,8 @@ public class Training1 {
 	public Training1(){
 		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
 		
-		for(int i=0;i<300;i++){
-			list.add( DoubleChromosome.of(-100,100,12) );
+		for(int i=0;i<100;i++){
+			list.add( DoubleChromosome.of(-100,100,2330) );
 		}
 		
 		this.gtf=Genotype.of(list );
@@ -60,8 +61,8 @@ public class Training1 {
 		this.player[0]=this.spl;
 		this.player[1]=new SimplePlayer();
 		
-		host.setPlayer(0,this.player[0]);
-		host.setPlayer(1,this.player[1]);
+		host.setPlayer(Color.BLACK,this.player[0]);
+		host.setPlayer(Color.WHITE,this.player[1]);
 		
 	}
 	
@@ -71,12 +72,11 @@ public class Training1 {
 	}
 
 	public static void main(String[] args) {
-		//To Do
-		String filePath="traing1.nn";
+		String filePath="trainingg2.nn";
 		
 		Training1 t1=new Training1();
+		//t1.spl.getNetwork().load(filePath);
 		t1.train();
-		
 		t1.spl.getNetwork().save(filePath);
 
 	}
