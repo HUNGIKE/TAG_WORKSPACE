@@ -18,6 +18,10 @@ public class Host {
 		this.controller=new Controller(data);
 	}
 	
+	public Viewer getViewer(){
+		return this.viewer;
+	}
+	
 	public void setPlayer(Data.Color playerColor,Player player){
 		for(int i=0;i<this.playerColor.length;i++){
 			if(this.playerColor[i].equals(playerColor)){
@@ -45,14 +49,6 @@ public class Host {
 			//error handling 
 			
 			this.controller.setValue(retP.x,retP.y,playerColor[p]);
-			//  this.data.print();
-			
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 		}
 		System.out.print("Score: BLACK "+this.controller.getScore(Data.Color.BLACK));

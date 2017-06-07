@@ -19,7 +19,7 @@ public class Controller {
 	private int step=0;
 	private boolean isGameTerminated=false;
 	public boolean isGameTerminated(){
-		return this.step>=100;
+		return this.step>=10000;
 	}
 	
 	public void reset(){
@@ -69,17 +69,18 @@ public class Controller {
 			
 		}
 		
+		
 	}
 	
 	
 	public void clean(List<Point> points){
-		// System.out.println("clean:");
+		System.out.println("clean:");
 		for(Point p:points){
-			// System.out.print("   "+p.x+","+p.y);
+			System.out.print("   "+p.x+","+p.y);
 			this.data.setValue(p.x,p.y,null);
 		}
 		
-		// System.out.println();
+		System.out.println();
 	}
 	
 	public void tryToCollectClosedSet(int startX,int startY,List<Point> closedSet) throws CannotFindClosedSetException{
