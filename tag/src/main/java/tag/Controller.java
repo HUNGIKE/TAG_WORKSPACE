@@ -7,6 +7,8 @@ import tag.Data.Color;
 import tag.Data.Grid;
 import tag.Data.Point;
 import tag.exception.CannotFindClosedSetException;
+import tag.exception.OperationProhibitedException;
+import tag.exception.OutOfBoardException;
 
 public class Controller {
 	final private int[][] OFFSET=new int[][]{{0,-1},{0,1},{-1,0},{1,0}}; 
@@ -19,7 +21,7 @@ public class Controller {
 	private int step=0;
 	private boolean isGameTerminated=false;
 	public boolean isGameTerminated(){
-		return this.step>=10000;
+		return this.step>=30;
 	}
 	
 	public void reset(){
@@ -45,20 +47,27 @@ public class Controller {
 	}
 	
 	
-	public void setValue(int x,int y,Color color){
+	public void setValue(int x,int y,Color color) throws OutOfBoardException, OperationProhibitedException{
+		
+		Grid grid=this.data.getGrid(x, y);
+		if(grid==null){
+			throw new OutOfBoardException();
+		}else if(grid.color!=null){
+			throw new OperationProhibitedException();
+		}
+		
 		this.step++;
 		this.data.setValue(x, y, color);
 		
 
 		for(int[] offset:this.OFFSET){
-			Grid grid=this.data.getGrid(x+offset[0], y+offset[1]);
-			if(grid==null)continue;
-			Color cNear=grid.color;
+			Grid gridNear=this.data.getGrid(x+offset[0], y+offset[1]);
+			if(gridNear==null)continue;
+			Color cNear=gridNear.color;
 			
 			if(!color.equals(cNear)){
 				
 				try {
-					
 					List closeSet=new LinkedList();
 					tryToCollectClosedSet(x+offset[0], y+offset[1],closeSet);
 					clean(closeSet);
@@ -69,18 +78,26 @@ public class Controller {
 			
 		}
 		
+		try {
+			List closeSet=new LinkedList();
+			tryToCollectClosedSet(x, y,closeSet);
+			clean(closeSet);
+		} catch (CannotFindClosedSetException e) {
+			//ignore 
+		}
+		
 		
 	}
 	
 	
 	public void clean(List<Point> points){
-		System.out.println("clean:");
+		// System.out.println("clean:");
 		for(Point p:points){
-			System.out.print("   "+p.x+","+p.y);
+			// System.out.print("   "+p.x+","+p.y);
 			this.data.setValue(p.x,p.y,null);
 		}
 		
-		System.out.println();
+		// System.out.println();
 	}
 	
 	public void tryToCollectClosedSet(int startX,int startY,List<Point> closedSet) throws CannotFindClosedSetException{

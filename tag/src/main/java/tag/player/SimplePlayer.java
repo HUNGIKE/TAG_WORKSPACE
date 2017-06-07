@@ -3,7 +3,9 @@ package tag.player;
 import tag.Data.Color;
 import tag.Data.Point;
 
+import org.neuroph.core.Layer;
 import org.neuroph.core.NeuralNetwork;
+import org.neuroph.nnet.ConvolutionalNetwork;
 import org.neuroph.nnet.MultiLayerPerceptron;
 
 import tag.Player;
@@ -12,8 +14,7 @@ import tag.Viewer;
 public class SimplePlayer extends Player {
 	private static NeuralNetwork neuralNetwork;
 	public SimplePlayer(){
-		this.neuralNetwork=new MultiLayerPerceptron(10*10,10,10,10,10*10);
-		
+		this.neuralNetwork=new MultiLayerPerceptron(10*10,2,2,2,2,2,10*10);
 	}
 	
 	

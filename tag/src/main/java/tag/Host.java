@@ -2,6 +2,9 @@ package tag;
 
 import java.awt.Color;
 
+import tag.exception.OperationProhibitedException;
+import tag.exception.OutOfBoardException;
+
 public class Host {
 	Data data;
 	Viewer viewer;
@@ -42,17 +45,21 @@ public class Host {
 		int p=0;
 		
 		while( ! this.controller.isGameTerminated() ){
-			p=(p+1)%2;
 			Player ply=this.player[p];
 			
 			Data.Point retP=ply.play(this.viewer);
 			//error handling 
 			
-			this.controller.setValue(retP.x,retP.y,playerColor[p]);
+			try {
+				this.controller.setValue(retP.x,retP.y,playerColor[p]);
+			} catch (OutOfBoardException | OperationProhibitedException e) {
+				continue;
+			}
+			p=(p+1)%2;
 			
 		}
-		System.out.print("Score: BLACK "+this.controller.getScore(Data.Color.BLACK));
-		System.out.println(",WHITE "+this.controller.getScore(Data.Color.WHITE));
+		// System.out.print("Score: BLACK "+this.controller.getScore(Data.Color.BLACK));
+		// System.out.println(",WHITE "+this.controller.getScore(Data.Color.WHITE));
 	}
 
 }

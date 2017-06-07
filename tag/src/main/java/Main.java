@@ -11,9 +11,10 @@ public class Main {
 		Host host=new Host();
 		
 		SimplePlayer p1=new SimplePlayer();
-		p1.setNetwork(NeuralNetwork.load("trainingg1.nn"));
+		p1.setNetwork(NeuralNetwork.load("training1.nn"));
 		
 		GUIPlayer p2=new GUIPlayer(host.getViewer());
+		// SimplePlayer p2=new SimplePlayer();
 		
 		host.setPlayer(Data.Color.BLACK,p1);
 		host.setPlayer(Data.Color.WHITE,p2);
