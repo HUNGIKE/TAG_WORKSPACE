@@ -10,6 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import tag.Data;
+
 public abstract class BoardPanel extends JPanel{
 	
 	Grid[][] grid;
@@ -32,6 +34,40 @@ public abstract class BoardPanel extends JPanel{
 	public void setColor(int x,int y,Color color){
 		this.grid[x][y].setColor(color);
 		this.grid[x][y].repaint();
+	}
+	
+	
+	public void blink(Data.Point[] points,Color[] colors){
+		
+		Color[] oldColors=new Color[points.length];
+		
+		for(int i=0;i<points.length;i++){
+			int x=points[i].x,y=points[i].y;
+			oldColors[i]=this.grid[x][y].color;
+		}
+		
+		for(int j=0;j<5;j++){
+			
+			for(int i=0;i<points.length;i++){
+				int x=points[i].x,y=points[i].y;
+				this.grid[x][y].color=oldColors[i];
+			}
+			this.repaint();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {}
+			
+			
+			for(int i=0;i<points.length;i++){
+				int x=points[i].x,y=points[i].y;
+				this.grid[x][y].color=colors[i];
+			}
+			this.repaint();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {}
+		}
+		
 	}
 	
 	protected abstract void GridClick(int x,int y);

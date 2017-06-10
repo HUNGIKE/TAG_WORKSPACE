@@ -18,15 +18,18 @@ public class Controller {
 		this.data=data;
 	}
 	
-	private int step=0;
+
 	private boolean isGameTerminated=false;
 	public boolean isGameTerminated(){
-		return this.step>=30;
+		return this.isGameTerminated;
 	}
+	public void setGameTerminated(boolean isGameTerminated){
+		this.isGameTerminated=isGameTerminated;
+	}
+	
 	
 	public void reset(){
 		this.data.createBoard();
-		this.step=0;
 		this.isGameTerminated=false;
 		
 	}
@@ -56,7 +59,6 @@ public class Controller {
 			throw new OperationProhibitedException();
 		}
 		
-		this.step++;
 		this.data.setValue(x, y, color);
 		
 

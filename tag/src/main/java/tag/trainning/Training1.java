@@ -50,7 +50,7 @@ public class Training1 {
 		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
 		
 		for(int i=0;i<100;i++){
-			list.add( DoubleChromosome.of(-1000,1000,526) );
+			list.add( DoubleChromosome.of(-1000,1000,1605) );
 		}
 		
 		this.gtf=Genotype.of(list );
@@ -68,7 +68,7 @@ public class Training1 {
 	}
 	
 	public void train(){
-		Genotype<DoubleGene> result = engine.stream().limit(50).collect(EvolutionResult.toBestGenotype());
+		Genotype<DoubleGene> result = engine.stream().limit(500).collect(EvolutionResult.toBestGenotype());
 		this.spl.getNetwork().setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
 	}
 

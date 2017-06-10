@@ -12,49 +12,21 @@ import tag.ui.MainFrame;
 
 public class GUIPlayer extends Player {
 	MainFrame frame;
-	Viewer viewer;
 	
-	public GUIPlayer(Viewer viewer){
-		this.frame=new MainFrame();
-		this.viewer=viewer;
+	public GUIPlayer(){
 	}
 	
-	private void updadteFrame(){
-		int w=this.viewer.getWidth();
-		int h=this.viewer.getHeigth();
-		
-		
-		for(int x=0;x<w;x++){
-			for(int y=0;y<h;y++){
-				Grid grid=this.viewer.getGrid(x, y);
-				if(grid!=null){
-					this.frame.setColor(x, y, toGUIColor(grid.color) );
-				}else{
-					this.frame.setColor(x, y,null);
-				}
-				
-			}
-			
-		}
-		this.frame.repaint();
+	public void setGUI(MainFrame frame){
+		this.frame=frame;
 	}
-	
-	private Color toGUIColor(Data.Color color){
-		if(color==null)return null;
-		if(color.equals(Data.Color.BLACK)){
-			return Color.BLACK;
-		}else if(color.equals(Data.Color.WHITE)){
-			return Color.WHITE;
-		}else{
-			return null;
-		}
-	}
-	
 	
 	@Override
 	public Point play(Viewer v) {
-		updadteFrame();
-		return frame.getPoint();
+		this.frame.updadteFrame(v,false);
+		
+		Point point=frame.getPoint();		
+		this.frame.setColor(point.x,point.y,this.frame.toGUIColor( v.getColor()) );
+		return point;
 	}
 
 }

@@ -5,6 +5,15 @@ import tag.Data.Grid;
 
 public class Viewer {
 	private Data data;
+	private Color color;
+	
+	public void setColor(Color color){
+		this.color=color;
+	}
+	
+	public Color getColor(){
+		return this.color;
+	}
 	
 	public Viewer(Data data){
 		this.data=data;

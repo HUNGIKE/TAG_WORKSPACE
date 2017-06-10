@@ -14,7 +14,7 @@ import tag.Viewer;
 public class SimplePlayer extends Player {
 	private static NeuralNetwork neuralNetwork;
 	public SimplePlayer(){
-		this.neuralNetwork=new MultiLayerPerceptron(10*10,2,2,2,2,2,10*10);
+		this.neuralNetwork=new MultiLayerPerceptron(10*10*2,5,10*10);
 	}
 	
 	
@@ -45,6 +45,7 @@ public class SimplePlayer extends Player {
 		for(int i=0;i<output.length;i++){
 			int x=i/h , y=i%h;
 			
+			
 			if( v.getValue(x, y)==null && output[x*h+y]>maxV ){
 				maxV=output[x*h+y];
 				maxX=x;maxY=y;
@@ -58,16 +59,17 @@ public class SimplePlayer extends Player {
 	private double[] getDoubleArray(Viewer v){
 		int w=v.getWidth(),h=v.getHeigth();
 		
-		double[] ret=new double[w*h];
+		double[] ret=new double[w*h*2];
 		
 		for(int i=0;i<w*h;i++){
 			int x=i/h , y=i%h;
-				Color c=v.getValue(x, y);
-				if(c!=null){
-					ret[i]=c.ordinal();
-				}else{
-					ret[i]=-1;
-				}
+			Color c=v.getValue(x, y);
+			if(c!=null){
+				ret[c.equals(v.getColor())?i:i*2]=1;
+			}
+			
+			
+			ret[i]/=10;
 		}
 		
 		return ret;
