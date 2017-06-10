@@ -1,7 +1,9 @@
 package tag;
 
 import java.awt.Color;
+import java.util.List;
 
+import tag.Data.Point;
 import tag.exception.OperationProhibitedException;
 import tag.exception.OutOfBoardException;
 import tag.ui.MainFrame;
@@ -73,12 +75,13 @@ public class Host {
 			
 			try {
 				Data.Point retP=ply.play(this.viewer);
-				this.controller.setValue(retP.x,retP.y,this.viewer.getColor());
+				List<Data.Point> closeSet=this.controller.setValue(retP.x,retP.y,this.viewer.getColor());
+				this.controller.clean(closeSet);
 			} catch (OutOfBoardException | OperationProhibitedException e) {
 				continue;
 			}finally{
 				if(this.mainframe!=null){
-					this.mainframe.updadteFrame(this.viewer,true);
+					this.mainframe.updadteFrame(this.viewer);
 				}
 			}
 			

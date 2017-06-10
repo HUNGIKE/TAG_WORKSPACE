@@ -50,7 +50,7 @@ public class Controller {
 	}
 	
 	
-	public void setValue(int x,int y,Color color) throws OutOfBoardException, OperationProhibitedException{
+	public List<Data.Point> setValue(int x,int y,Color color) throws OutOfBoardException, OperationProhibitedException{
 		
 		Grid grid=this.data.getGrid(x, y);
 		if(grid==null){
@@ -62,17 +62,17 @@ public class Controller {
 		this.data.setValue(x, y, color);
 		
 
+		List<Data.Point> allCloseSet=new LinkedList();
 		for(int[] offset:this.OFFSET){
 			Grid gridNear=this.data.getGrid(x+offset[0], y+offset[1]);
 			if(gridNear==null)continue;
 			Color cNear=gridNear.color;
 			
 			if(!color.equals(cNear)){
-				
+				List<Data.Point> closeSet=new LinkedList();
 				try {
-					List closeSet=new LinkedList();
 					tryToCollectClosedSet(x+offset[0], y+offset[1],closeSet);
-					clean(closeSet);
+					allCloseSet.addAll(closeSet);
 				} catch (CannotFindClosedSetException e) {
 					continue;
 				}
@@ -80,15 +80,16 @@ public class Controller {
 			
 		}
 		
-		try {
-			List closeSet=new LinkedList();
-			tryToCollectClosedSet(x, y,closeSet);
-			clean(closeSet);
-		} catch (CannotFindClosedSetException e) {
-			//ignore 
+		if(allCloseSet.isEmpty()){
+			try {
+				List closeSet=new LinkedList();
+				tryToCollectClosedSet(x, y,closeSet);
+				allCloseSet.addAll(closeSet);
+			} catch (CannotFindClosedSetException e) {
+				//ignore 
+			}
 		}
-		
-		
+		return allCloseSet;
 	}
 	
 	

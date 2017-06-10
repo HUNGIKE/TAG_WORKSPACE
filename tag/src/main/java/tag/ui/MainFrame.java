@@ -86,7 +86,7 @@ public class MainFrame extends JFrame{
 		this.boardpanel.setColor(x, y, color);
 	}
 	
-	public void updadteFrame(Viewer v,boolean blink){
+	public void updadteFrame(Viewer v){
 		int w=v.getWidth();
 		int h=v.getHeigth();
 		

@@ -22,7 +22,7 @@ public class GUIPlayer extends Player {
 	
 	@Override
 	public Point play(Viewer v) {
-		this.frame.updadteFrame(v,false);
+		this.frame.updadteFrame(v);
 		
 		Point point=frame.getPoint();		
 		this.frame.setColor(point.x,point.y,this.frame.toGUIColor( v.getColor()) );
