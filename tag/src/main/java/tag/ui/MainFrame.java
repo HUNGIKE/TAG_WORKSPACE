@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -86,6 +87,10 @@ public class MainFrame extends JFrame{
 		this.boardpanel.setColor(x, y, color);
 	}
 	
+	public void Clean(List<Data.Point> cleanPoint){
+		this.boardpanel.clean(cleanPoint);
+	}
+	
 	public void updadteFrame(Viewer v){
 		int w=v.getWidth();
 		int h=v.getHeigth();
@@ -100,7 +105,6 @@ public class MainFrame extends JFrame{
 				if( (newColor!=null && !newColor.equals(oldColor) ) ||
 					(oldColor!=null && !oldColor.equals(newColor) )  ){
 					this.setColor(x, y, newColor);
-					
 				}
 			}
 			

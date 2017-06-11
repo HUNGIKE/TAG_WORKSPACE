@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -29,46 +30,50 @@ public abstract class BoardPanel extends JPanel{
 	}
 	
 	
-	
+	public void clean(List<Data.Point> cleanPoint){
+		
+		for(int i=0;i<3;i++){
+			for(Data.Point point:cleanPoint){
+				this.grid[point.x][point.y].setShowChess(false);
+			}
+			this.repaint();
+			try {Thread.sleep(100); } catch (InterruptedException e) {}
+			for(Data.Point point:cleanPoint){
+				this.grid[point.x][point.y].setShowChess(true);
+			}
+			this.repaint();
+			try {Thread.sleep(100); } catch (InterruptedException e) {}
+		}
+		
+		
+		for(Data.Point point:cleanPoint){
+			this.grid[point.x][point.y].setColor(null);
+		}
+		this.repaint();
+		
+	}
 	
 	public void setColor(int x,int y,Color color){
-		this.grid[x][y].setColor(color);
-		this.grid[x][y].repaint();
-	}
-	
-	
-	public void blink(Data.Point[] points,Color[] colors){
-		
-		Color[] oldColors=new Color[points.length];
-		
-		for(int i=0;i<points.length;i++){
-			int x=points[i].x,y=points[i].y;
-			oldColors[i]=this.grid[x][y].color;
+		Color oldColor=this.grid[x][y].color;
+		if(color==null && oldColor==null ||
+			color!=null && color.equals(oldColor) || 
+			oldColor!=null && oldColor.equals(color)){
+			return;
 		}
 		
-		for(int j=0;j<5;j++){
-			
-			for(int i=0;i<points.length;i++){
-				int x=points[i].x,y=points[i].y;
-				this.grid[x][y].color=oldColors[i];
-			}
-			this.repaint();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {}
-			
-			
-			for(int i=0;i<points.length;i++){
-				int x=points[i].x,y=points[i].y;
-				this.grid[x][y].color=colors[i];
-			}
-			this.repaint();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {}
-		}
+		for(int i=0;i<3;i++){
+
+			this.grid[x][y].setColor(oldColor);
+			this.grid[x][y].repaint();
+			try { Thread.sleep(100); } catch (InterruptedException e) {}
 		
+			this.grid[x][y].setColor(color);
+			this.grid[x][y].repaint();
+			try { Thread.sleep(100); } catch (InterruptedException e) {}
+		}
 	}
+	
+
 	
 	protected abstract void GridClick(int x,int y);
 
@@ -98,11 +103,17 @@ public abstract class BoardPanel extends JPanel{
 			this.color=color;
 		}
 		
+		private boolean isShowChess=true;
+		public void setShowChess(boolean isShowChess){
+			this.isShowChess=isShowChess;
+		}
+		
+		
 		@Override
 		public void paint(Graphics g){
 			super.paint(g);
 			if(this.color==null)return;
-			
+			if( !this.isShowChess )return;
 			
 			this.setOpaque(true);
 			

@@ -75,8 +75,15 @@ public class Host {
 			
 			try {
 				Data.Point retP=ply.play(this.viewer);
-				List<Data.Point> closeSet=this.controller.setValue(retP.x,retP.y,this.viewer.getColor());
-				this.controller.clean(closeSet);
+				if(retP==null)throw new OperationProhibitedException();
+				
+				List<Data.Point> closeSet=this.controller.setValue(retP.x,retP.y,this.viewer.getColor());				
+				if(this.mainframe!=null)this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor( this.viewer.getColor() ) );
+
+				if( ! closeSet.isEmpty()){
+					this.controller.clean(closeSet);
+					if(this.mainframe!=null)this.mainframe.Clean(closeSet);
+				}
 			} catch (OutOfBoardException | OperationProhibitedException e) {
 				continue;
 			}finally{
