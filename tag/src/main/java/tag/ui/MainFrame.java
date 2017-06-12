@@ -27,6 +27,7 @@ import tag.Data.Point;
 import tag.Host;
 import tag.Viewer;
 
+
 public class MainFrame extends JFrame{
 	
 	private BoardPanel boardpanel;
@@ -124,10 +125,11 @@ public class MainFrame extends JFrame{
 		}
 	}
 	
-	public static void main(String[] args) {
-		new MainFrame();
-
-	}
+//	public static void main(String[] args) {
+//		new MainFrame();
+//	}
+	
+	
 	
 }
 
@@ -153,7 +155,7 @@ abstract class ControlPanel extends JPanel{
 		this.setBackground(Color.RED);
 		this.setLayout(null);
 		this.reset=new JButton("Reset");
-		this.reset.setLocation(400,10);
+		this.reset.setLocation(380,10);
 		this.reset.setSize(100,30);
 		
 		this.add(this.reset);

@@ -65,6 +65,7 @@ public class Host {
 	}
 	
 	public void run(){
+		this.round=0;
 		this.controller.reset();		
 		
 		int p=0;

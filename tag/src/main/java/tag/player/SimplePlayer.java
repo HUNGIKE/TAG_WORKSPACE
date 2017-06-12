@@ -7,6 +7,7 @@ import org.neuroph.core.Layer;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.nnet.ConvolutionalNetwork;
 import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.util.TransferFunctionType;
 
 import tag.Player;
 import tag.Viewer;
@@ -33,6 +34,8 @@ public class SimplePlayer extends Player {
 		neuralNetwork.calculate();
 		double[] output=neuralNetwork.getOutput();
 		
+
+		
 		return getPointFromOutput(v,output);
 	}
 	
@@ -45,13 +48,15 @@ public class SimplePlayer extends Player {
 		for(int i=0;i<output.length;i++){
 			int x=i/h , y=i%h;
 			
-			
 			if( v.getValue(x, y)==null && output[x*h+y]>maxV ){
 				maxV=output[x*h+y];
 				maxX=x;maxY=y;
 			}
+				
+				// if(y==0)System.out.println();
+				// System.out.print(" "+((int)(output[x*h+y]*100))/100.0);
 		}
-		
+		// System.out.println();
 		
 		return new Point(maxX,maxY);
 	}
@@ -67,9 +72,6 @@ public class SimplePlayer extends Player {
 			if(c!=null){
 				ret[c.equals(v.getColor())?i:i*2]=1;
 			}
-			
-			
-			ret[i]/=10;
 		}
 		
 		return ret;

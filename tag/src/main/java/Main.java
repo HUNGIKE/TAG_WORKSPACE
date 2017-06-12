@@ -2,7 +2,9 @@ import org.neuroph.core.NeuralNetwork;
 
 import tag.Data;
 import tag.Host;
+import tag.Player;
 import tag.player.GUIPlayer;
+import tag.player.RandomPlayer;
 import tag.player.SimplePlayer;
 import tag.ui.MainFrame;
 
@@ -22,10 +24,10 @@ public class Main {
 		SimplePlayer p3=new SimplePlayer();
 		p3.setNetwork(NeuralNetwork.load("training1.nn"));
 		
-		SimplePlayer p4=new SimplePlayer();
+		Player p4=new RandomPlayer();
 		
-		host.setPlayer(Data.Color.BLACK,p3);
-		host.setPlayer(Data.Color.WHITE,p2);
+		host.setPlayer(Data.Color.BLACK,p1);
+		host.setPlayer(Data.Color.WHITE,p4);
 		
 		host.run();
 
