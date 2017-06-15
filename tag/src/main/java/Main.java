@@ -3,6 +3,7 @@ import org.neuroph.core.NeuralNetwork;
 import tag.Data;
 import tag.Host;
 import tag.Player;
+import tag.player.CNNPlayer;
 import tag.player.GUIPlayer;
 import tag.player.RandomPlayer;
 import tag.player.SimplePlayer;
@@ -26,8 +27,10 @@ public class Main {
 		
 		Player p4=new RandomPlayer();
 		
+		Player p5=new CNNPlayer();
+		
 		host.setPlayer(Data.Color.BLACK,p1);
-		host.setPlayer(Data.Color.WHITE,p4);
+		host.setPlayer(Data.Color.WHITE,p5);
 		
 		host.run();
 

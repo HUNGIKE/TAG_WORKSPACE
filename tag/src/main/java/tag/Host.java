@@ -64,7 +64,7 @@ public class Host {
 		return this.round;
 	}
 	
-	public void run(){
+	public synchronized void run(){
 		this.round=0;
 		this.controller.reset();		
 		
@@ -100,8 +100,6 @@ public class Host {
 			if(this.round>=this.maximusRound){
 				this.controller.setGameTerminated(true);
 			}
-			
-			
 		}
 		
 		

@@ -15,9 +15,13 @@ import tag.Viewer;
 public class SimplePlayer extends Player {
 	private static NeuralNetwork neuralNetwork;
 	public SimplePlayer(){
-		this.neuralNetwork=new MultiLayerPerceptron(10*10*2,5,10*10);
+		this.neuralNetwork=this.createNetwork();
 	}
 	
+	
+	protected NeuralNetwork createNetwork(){
+		return new MultiLayerPerceptron(10*10*2,5,10*10);
+	}
 	
 	public void setNetwork(NeuralNetwork neuralNetwork){
 		this.neuralNetwork=neuralNetwork;
@@ -34,7 +38,6 @@ public class SimplePlayer extends Player {
 		neuralNetwork.calculate();
 		double[] output=neuralNetwork.getOutput();
 		
-
 		
 		return getPointFromOutput(v,output);
 	}
