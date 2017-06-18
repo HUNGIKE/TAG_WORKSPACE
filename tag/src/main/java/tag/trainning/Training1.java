@@ -28,6 +28,15 @@ public class Training1 {
 	
 	public void setTrainPlayer(SimplePlayer trainPlayer){
 		this.trainPlayer=trainPlayer;
+		
+		int weightLen=this.trainPlayer.getNetwork().getWeights().length;
+		
+		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
+		for(int i=0;i<10;i++){
+			list.add( DoubleChromosome.of(-100,100,weightLen) );
+		}
+		this.gtf=Genotype.of(list );
+		this.engine=Engine.builder(this::eval, this.gtf).build();
 	}
 	
 	public void setRivalPlayer(Player rivalPlayer){
@@ -52,25 +61,11 @@ public class Training1 {
 	}
 	
 	public Training1(){
-		this.trainPlayer=new CNNPlayer();
-		int weightLen=this.trainPlayer.getNetwork().getWeights().length;
-		
-		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
-		
-		for(int i=0;i<10;i++){
-			list.add( DoubleChromosome.of(-1000,1000,weightLen) );
-		}
-		
-		this.gtf=Genotype.of(list );
-		this.engine=Engine.builder(this::eval, this.gtf).build();
-		
-
-		
+		this.host=new Host();
+		this.host.setMaximusRound(50);
 	}
 	
 	public void train(){
-		this.host=new Host();
-		this.host.setMaximusRound(30);
 		
 		this.host.setPlayer(Color.BLACK,this.trainPlayer);
 		this.host.setPlayer(Color.WHITE,this.rivalPlayer);
@@ -84,10 +79,17 @@ public class Training1 {
 		String filePath="training1.nn";
 		
 		Training1 t1=new Training1();
-		t1.setRivalPlayer(new RandomPlayer());
+		
+		CNNPlayer p1=new CNNPlayer();
+		
+		SimplePlayer p2=new SimplePlayer();
+		p2.setNetwork(NeuralNetwork.load("training1.nn"));
+		
+		t1.setTrainPlayer(p1);
+		t1.setRivalPlayer(p2);
+		
+		
 		t1.train();
-		
-		
 		t1.trainPlayer.getNetwork().save(filePath);
 
 	}

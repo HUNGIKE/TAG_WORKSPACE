@@ -14,7 +14,6 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		Host host=new Host();
 		host.setGUI(new MainFrame());
-		host.setMaximusRound(10000);
 
 		GUIPlayer p1=new GUIPlayer();
 		p1.setGUI(host.getGUI());		
@@ -28,6 +27,7 @@ public class Main {
 		Player p4=new RandomPlayer();
 		
 		Player p5=new CNNPlayer();
+		p3.setNetwork(NeuralNetwork.load("training1.nn"));
 		
 		host.setPlayer(Data.Color.BLACK,p1);
 		host.setPlayer(Data.Color.WHITE,p5);

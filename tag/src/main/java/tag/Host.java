@@ -51,7 +51,7 @@ public class Host {
 		return this.controller;
 	}
 	
-	private int maximusRound=30;
+	private int maximusRound=0;
 	public void setMaximusRound(int maximusRound){
 		this.maximusRound=maximusRound;
 	}
@@ -97,7 +97,7 @@ public class Host {
 			p=(p+1)%2;
 			if(p==0){ this.round++; }
 			
-			if(this.round>=this.maximusRound){
+			if(this.maximusRound>0 && this.round>=this.maximusRound){
 				this.controller.setGameTerminated(true);
 			}
 		}
