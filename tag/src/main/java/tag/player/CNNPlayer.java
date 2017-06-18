@@ -17,5 +17,12 @@ public class CNNPlayer extends SimplePlayer {
 		cb.withFullConnectedLayer(100);
 		return cb.createNetwork();
 	}
+	
+	
+	
+	@Override
+	public String toString(){
+		return "CNN AI Player";
+	}
 
 }

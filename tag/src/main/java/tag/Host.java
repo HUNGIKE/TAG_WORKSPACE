@@ -1,6 +1,7 @@
 package tag;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.List;
 
 import tag.Data.Point;
@@ -27,6 +28,7 @@ public class Host {
 	
 	public void setGUI(MainFrame mainframe){
 		this.mainframe=mainframe;
+		this.mainframe.setHost(this);
 	}
 	
 	public MainFrame getGUI(){
@@ -35,6 +37,10 @@ public class Host {
 	
 	public Viewer getViewer(){
 		return this.viewer;
+	}
+	
+	public void setPlayerListItem(int idx,Player[] players){
+		this.mainframe.setPlayerListItem(idx, players);
 	}
 	
 	public void setPlayer(Data.Color playerColor,Player player){
@@ -65,12 +71,18 @@ public class Host {
 	}
 	
 	public synchronized void run(){
+		
+		
 		this.round=0;
-		this.controller.reset();		
+		this.controller.reset();
 		
 		int p=0;
 		
 		while( ! this.controller.isGameTerminated() ){
+			if(this.mainframe!=null){
+				this.mainframe.setRoundString(this.round,this.maximusRound);
+			}
+			
 			Player ply=this.player[p];
 			this.viewer.setColor(playerColor[p]);
 			

@@ -31,5 +31,11 @@ public class GUIPlayer extends Player {
 		this.frame.setColor(point.x,point.y,this.frame.toGUIColor( v.getColor()) );
 		return point;
 	}
+	
+	
+	@Override
+	public String toString(){
+		return "GUI Player";
+	}
 
 }

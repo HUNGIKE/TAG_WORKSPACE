@@ -79,5 +79,11 @@ public class SimplePlayer extends Player {
 		
 		return ret;
 	}
+	
+	
+	@Override
+	public String toString(){
+		return "Simple AI Player";
+	}
 
 }
