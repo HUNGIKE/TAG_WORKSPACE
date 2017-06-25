@@ -18,6 +18,11 @@ public class Controller {
 		this.data=data;
 	}
 	
+	public Controller(){}
+	
+	public void setData(Data data){
+		this.data=data;
+	}
 
 	private boolean isGameTerminated=false;
 	public boolean isGameTerminated(){

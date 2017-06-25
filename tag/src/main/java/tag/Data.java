@@ -69,7 +69,11 @@ public class Data {
 	}
 	
 	public static enum Color{
-		BLACK,WHITE 
+		BLACK,WHITE;
+		
+		public Color rivalColor(){
+			return this.equals(BLACK)?WHITE:BLACK;
+		}
 	}
 	
 	public void print(){

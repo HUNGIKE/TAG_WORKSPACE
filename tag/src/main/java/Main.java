@@ -7,6 +7,7 @@ import tag.player.CNNPlayer;
 import tag.player.GUIPlayer;
 import tag.player.RandomPlayer;
 import tag.player.SimplePlayer;
+import tag.player.gametree.GameTreePlayer;
 import tag.ui.MainFrame;
 
 public class Main {
@@ -24,35 +25,14 @@ public class Main {
 	
 	
 	public static Player[] getPlayerList1(Host host){
-		Player[] players=new Player[4];
+		Player[] players=new Player[5];
 		
 		GUIPlayer guiPlayer=new GUIPlayer();
 		guiPlayer.setGUI(host.getGUI());
 		players[0]=guiPlayer;
 		
-		players[1]=new RandomPlayer();
-		
-		SimplePlayer simplePlayer=new SimplePlayer();
-		simplePlayer.getNetwork().load("training_ANN.nn");
-		players[2]=simplePlayer;
-		
-		CNNPlayer cnnPlayer=new CNNPlayer();
-		cnnPlayer.getNetwork().load("training_CNN.nn");
-		players[3]=cnnPlayer;
-		
-		return players;
-	}
-	
-	public static Player[] getPlayerList2(Host host){
-		Player[] players=new Player[4];
-		
-		CNNPlayer cnnPlayer=new CNNPlayer();
-		cnnPlayer.getNetwork().load("training_CNN.nn");
-		players[0]=cnnPlayer;
-		
-		GUIPlayer guiPlayer=new GUIPlayer();
-		guiPlayer.setGUI(host.getGUI());
-		players[1]=guiPlayer;
+		GameTreePlayer gtp=new GameTreePlayer();
+		players[1]=gtp;
 		
 		players[2]=new RandomPlayer();
 		
@@ -60,7 +40,33 @@ public class Main {
 		simplePlayer.getNetwork().load("training_ANN.nn");
 		players[3]=simplePlayer;
 		
-
+		CNNPlayer cnnPlayer=new CNNPlayer();
+		cnnPlayer.getNetwork().load("training_CNN.nn");
+		players[4]=cnnPlayer;
+		
+		return players;
+	}
+	
+	public static Player[] getPlayerList2(Host host){
+		Player[] players=new Player[5];
+		
+		
+		GameTreePlayer gtp=new GameTreePlayer();
+		players[0]=gtp;
+		
+		CNNPlayer cnnPlayer=new CNNPlayer();
+		cnnPlayer.getNetwork().load("training_CNN.nn");
+		players[1]=cnnPlayer;
+		
+		GUIPlayer guiPlayer=new GUIPlayer();
+		guiPlayer.setGUI(host.getGUI());
+		players[2]=guiPlayer;
+		
+		players[3]=new RandomPlayer();
+		
+		SimplePlayer simplePlayer=new SimplePlayer();
+		simplePlayer.getNetwork().load("training_ANN.nn");
+		players[4]=simplePlayer;
 		
 		return players;
 	}
