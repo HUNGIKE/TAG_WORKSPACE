@@ -9,7 +9,7 @@ import tag.exception.OperationProhibitedException;
 import tag.exception.OutOfBoardException;
 
 public class GameTreePlayer extends Player {
-	int DEPTH=2,WIDTH=100;
+	int DEPTH=3,WIDTH=100;
 
 	@Override
 	public Point play(Viewer viewer) {
@@ -26,10 +26,6 @@ public class GameTreePlayer extends Player {
 			p=new Point(0,0);
 		}
 		
-		// System.out.println(""+p.x+" ,"+p.y);
-		// mem.data.print();
-		
-		
 		return p;
 	}
 	
@@ -39,16 +35,16 @@ public class GameTreePlayer extends Player {
 		
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
 		
-		for(int x=0;x<boardWidth;x++){
+		scan:for(int x=0;x<boardWidth;x++){
 			for(int y=0;y<boardHeight;y++){
 				if(board.data.getGrid(x, y).color!=null)continue;
+				if(width<=0)break scan;width-=1;
 				
-				int newScore=runGameTree(depth-1,width-1,board,x,y,color);
+				int newScore=runGameTree(depth-1,WIDTH,board,x,y,color);
 				if(newScore>=score){
 					score=newScore;
 					pX=x;pY=y;
 				}
-				
 				
 			}
 		}
@@ -57,25 +53,27 @@ public class GameTreePlayer extends Player {
 	
 	private int runGameTree(int depth,int width,MemBoard board,int x,int y,Data.Color color) throws OutOfBoardException, OperationProhibitedException{
 		
-		if(depth==0)return countScore(board,color);
-		
-		
 		int score = Integer.MIN_VALUE;
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
 		
 		board.activate(x,y, color);
 
-		scan: for(int nextX=0;nextX<boardWidth;nextX++){
-			for(int nextY=0;nextY<boardHeight;nextY++){
-				if(board.data.getGrid(nextX, nextY).color!=null)continue;
-				if(width<=0)break scan;
-				width-=1;
-					
-				score = Math.max( score,-1*runGameTree(depth-1,width,board,nextX,nextY,color.rivalColor()) );
-
+		if(depth==0){
+			score=countScore(board,color);
+		}else{
+			
+			scan:for(int nextX=0;nextX<boardWidth;nextX++){
+				for(int nextY=0;nextY<boardHeight;nextY++){
+					if(board.data.getGrid(nextX, nextY).color!=null)continue;
+					if(width<=0)break scan;width-=1;
+						
+					int newScore=runGameTree(depth-1,WIDTH,board,nextX,nextY,color.rivalColor());
+					score = Math.max( score, newScore);			
+				}
 			}
+		
+			score*=-1;
 		}
-
 		
 		board.rollback();
 		return score;
