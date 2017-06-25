@@ -107,7 +107,7 @@ public class MainFrame extends JFrame{
 		this.setSize(530,670);
 		this.setResizable(false);
 		this.boardpanel.setEnabled(false);
-		this.boardpanel.setVisible(false);
+		//this.boardpanel.setVisible(false);
 		this.setVisible(true);
 		
 	}

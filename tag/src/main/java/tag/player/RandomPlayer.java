@@ -18,7 +18,7 @@ public class RandomPlayer extends Player {
 	
 	@Override
 	public Point play(Viewer v) {
-		this.setSeed(this.seed= (this.seed+1)%1000  );
+		this.setSeed(this.seed= (this.seed+1)%100000  );
 				
 		while(true){
 			int x=(int)(this.random.nextDouble()*v.getWidth());

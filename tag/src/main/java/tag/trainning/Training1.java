@@ -16,6 +16,7 @@ import tag.Player;
 import tag.player.CNNPlayer;
 import tag.player.RandomPlayer;
 import tag.player.SimplePlayer;
+import tag.ui.MainFrame;
 
 
 public class Training1 {
@@ -32,8 +33,8 @@ public class Training1 {
 		int weightLen=this.trainPlayer.getNetwork().getWeights().length;
 		
 		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
-		for(int i=0;i<10;i++){
-			list.add( DoubleChromosome.of(-100,100,weightLen) );
+		for(int i=0;i<30;i++){
+			list.add( DoubleChromosome.of(-1000,1000,weightLen) );
 		}
 		this.gtf=Genotype.of(list );
 		this.engine=Engine.builder(this::eval, this.gtf).build();
@@ -49,7 +50,7 @@ public class Training1 {
 
 		double score=0;
 		
-		for(int i=0;i<30;i++){
+		for(int i=0;i<10;i++){
 			this.host.run();
 			int blackScore=this.host.getController().getScore(Color.BLACK),
 				whiteScore=this.host.getController().getScore(Color.WHITE);
@@ -62,7 +63,9 @@ public class Training1 {
 	
 	public Training1(){
 		this.host=new Host();
-		this.host.setMaximusRound(50);
+		//MainFrame mainframe=new MainFrame();
+		//this.host.setGUI(mainframe);
+		this.host.setMaximusRound(10);
 	}
 	
 	public void train(){
@@ -71,26 +74,36 @@ public class Training1 {
 		this.host.setPlayer(Color.WHITE,this.rivalPlayer);
 		
 		
-		Genotype<DoubleGene> result = engine.stream().limit(100).collect(EvolutionResult.toBestGenotype());
+		Genotype<DoubleGene> result = engine.stream().limit(10).collect(EvolutionResult.toBestGenotype());
 		this.trainPlayer.getNetwork().setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
 	}
 
 	public static void main(String[] args) {
 		String filePath="training1.nn";
+
+
+		String filePath_ANN="training_ANN.nn";
+		String filePath_CNN="training_CNN.nn";
 		
 		Training1 t1=new Training1();
 		
 		CNNPlayer p1=new CNNPlayer();
+		p1.getNetwork().load(filePath_CNN);
 		
 		SimplePlayer p2=new SimplePlayer();
-		p2.setNetwork(NeuralNetwork.load("training1.nn"));
+		p2.getNetwork().load(filePath);
 		
-		t1.setTrainPlayer(p1);
-		t1.setRivalPlayer(p2);
+		RandomPlayer p3=new RandomPlayer();
+		
+		
+		t1.setTrainPlayer(p2);
+		t1.setRivalPlayer(p3);
 		
 		
 		t1.train();
-		t1.trainPlayer.getNetwork().save(filePath);
+		
+		p1.getNetwork().save(filePath_CNN);
+		p2.getNetwork().save(filePath_ANN);
 
 	}
 
