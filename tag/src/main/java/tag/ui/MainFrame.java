@@ -219,14 +219,14 @@ abstract class ControlPanel extends JPanel{
 		this.setLayout(null);
 		
 		this.reset=new JButton("Reset");
-		this.reset.setLocation(320,10);
+		this.reset.setLocation(380,10);
 		this.reset.setSize(100,30);	
 		this.reset.setEnabled(false);
 		this.reset.addMouseListener(this.ma);
 		this.add(this.reset);
 		
 		this.start=new JButton("Start");
-		this.start.setLocation(210,10);
+		this.start.setLocation(270,10);
 		this.start.setSize(100,30);
 		this.start.addMouseListener(this.ma);		
 		this.add(this.start);
@@ -237,13 +237,23 @@ abstract class ControlPanel extends JPanel{
 		this.roundText.setSize(180,100);
 		this.add(this.roundText);
 		
+		JLabel blackText=new JLabel("BLACK:");
+		blackText.setLocation(10, 5);
+		blackText.setSize(80,30);
+		this.add(blackText);
+		
 		this.list[0]=new JComboBox();
-		this.list[0].setLocation(10,10);
+		this.list[0].setLocation(60,10);
 		this.list[0].setSize(180,20);
 		this.add(list[0]);
 		
+		JLabel whiteText=new JLabel("WHITE:");
+		whiteText.setLocation(10, 35);
+		whiteText.setSize(80,30);
+		this.add(whiteText);
+		
 		this.list[1]=new JComboBox();
-		this.list[1].setLocation(10,40);
+		this.list[1].setLocation(60,40);
 		this.list[1].setSize(180,20);
 		this.add(list[1]);
 
