@@ -40,7 +40,7 @@ public class GameTreePlayer extends Player {
 				if(board.data.getGrid(x, y).color!=null)continue;
 				if(width<=0)break scan;width-=1;
 				
-				int newScore=runGameTree(depth-1,WIDTH,board,x,y,color);
+				int newScore=runGameTree(depth-1,WIDTH,board,x,y,color,score*-1);
 				if(newScore>=score){
 					score=newScore;
 					pX=x;pY=y;
@@ -51,7 +51,7 @@ public class GameTreePlayer extends Player {
 		return new Point(pX,pY);
 	}
 	
-	private int runGameTree(int depth,int width,MemBoard board,int x,int y,Data.Color color) throws OutOfBoardException, OperationProhibitedException{
+	private int runGameTree(int depth,int width,MemBoard board,int x,int y,Data.Color color,int alphabeta) throws OutOfBoardException, OperationProhibitedException{
 		
 		int score = Integer.MIN_VALUE;
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
@@ -66,9 +66,12 @@ public class GameTreePlayer extends Player {
 				for(int nextY=0;nextY<boardHeight;nextY++){
 					if(board.data.getGrid(nextX, nextY).color!=null)continue;
 					if(width<=0)break scan;width-=1;
+					if(score>alphabeta)break scan;
 						
-					int newScore=runGameTree(depth-1,WIDTH,board,nextX,nextY,color.rivalColor());
-					score = Math.max( score, newScore);			
+					int newScore=runGameTree(depth-1,WIDTH,board,nextX,nextY,color.rivalColor(),score*-1);
+					score = Math.max( score, newScore);
+					
+					
 				}
 			}
 		
