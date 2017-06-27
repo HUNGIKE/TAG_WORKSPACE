@@ -10,6 +10,7 @@ import tag.Data.Grid;
 import tag.Data.Point;
 import tag.exception.OperationProhibitedException;
 import tag.exception.OutOfBoardException;
+import tag.player.gametree.PointFixedPriorityQueue.PointValue;
 
 public class MemBoard{
 	public Data data;
@@ -61,6 +62,40 @@ public class MemBoard{
 			}
 		}while( actionItem!=null && Action.TAKE.equals(actionItem.action) );
 		
+	}
+	
+	
+
+	final private static int[][] OFFSET=new int[][]{{0,-1},{0,1},{-1,0},{1,0}}; 
+	private PointValue getPointValue(int x,int y){
+		int value=0;
+		
+		for(int[] offset:OFFSET){
+			Grid grid=this.data.getGrid(x+offset[0], y+offset[1]);
+			if(grid!=null && grid.color!=null){
+				value+=1;
+			}
+		}
+		
+		return new PointValue(new Point(x,y),value);
+	}
+	
+	
+	public PointFixedPriorityQueue getPriorityPoint(int number){
+		PointFixedPriorityQueue queue=new PointFixedPriorityQueue(number);
+		
+		int boardWidth=data.getWidth(),boardHeight=data.getHeigth();
+		
+		for(int x=0;x<boardWidth;x++){
+			for(int y=0;y<boardHeight;y++){
+				if(data.getGrid(x, y).color!=null)continue;
+				
+				queue.offer(getPointValue(x,y));
+			}
+		}
+		
+		
+		return queue;
 	}
 
 }
