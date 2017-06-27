@@ -7,9 +7,10 @@ import tag.Player;
 import tag.Viewer;
 import tag.exception.OperationProhibitedException;
 import tag.exception.OutOfBoardException;
+import tag.player.gametree.PointFixedPriorityQueue.PointValue;
 
 public class GameTreePlayer extends Player {
-	int DEPTH=3,WIDTH=100;
+	int DEPTH=6,WIDTH=8;
 
 	@Override
 	public Point play(Viewer viewer) {
@@ -31,24 +32,25 @@ public class GameTreePlayer extends Player {
 	
 	private Point runGameTree(int depth,int width,MemBoard board,Data.Color color) throws OutOfBoardException, OperationProhibitedException{
 		int score=Integer.MIN_VALUE;
-		int pX=0,pY=0;
+		Point retPoint=new Point(0,0);
 		
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
 		
-		scan:for(int x=0;x<boardWidth;x++){
-			for(int y=0;y<boardHeight;y++){
-				if(board.data.getGrid(x, y).color!=null)continue;
-				if(width<=0)break scan;width-=1;
-				
-				int newScore=runGameTree(depth-1,WIDTH,board,x,y,color,score*-1);
-				if(newScore>=score){
-					score=newScore;
-					pX=x;pY=y;
-				}
-				
+		
+		PointFixedPriorityQueue breadthQueue=board.getPriorityPoint(width);
+		Point point=null;
+		while( ( point=breadthQueue.poll())!=null){
+			if(board.data.getGrid(point.x,point.y).color!=null)continue;
+			
+			int newScore=runGameTree(depth-1,WIDTH,board,point.x,point.y,color,score*-1);
+			if(newScore>score){
+				score=newScore;
+				retPoint=point;
 			}
+			
 		}
-		return new Point(pX,pY);
+		
+		return retPoint;
 	}
 	
 	private int runGameTree(int depth,int width,MemBoard board,int x,int y,Data.Color color,int alphabeta) throws OutOfBoardException, OperationProhibitedException{
@@ -61,18 +63,15 @@ public class GameTreePlayer extends Player {
 		if(depth==0){
 			score=countScore(board,color);
 		}else{
-			
-			scan:for(int nextX=0;nextX<boardWidth;nextX++){
-				for(int nextY=0;nextY<boardHeight;nextY++){
-					if(board.data.getGrid(nextX, nextY).color!=null)continue;
-					if(width<=0)break scan;width-=1;
-					if(score>alphabeta)break scan;
-						
-					int newScore=runGameTree(depth-1,WIDTH,board,nextX,nextY,color.rivalColor(),score*-1);
-					score = Math.max( score, newScore);
-					
-					
-				}
+			PointFixedPriorityQueue breadthQueue=board.getPriorityPoint(width);
+			Point point=null;
+			while( ( point=breadthQueue.poll())!=null){
+				if(board.data.getGrid(point.x,point.y).color!=null)continue;
+				if(score>alphabeta)break;
+				
+				int newScore=runGameTree(depth-1,WIDTH,board,point.x,point.y,color.rivalColor(),score*-1);
+				score = Math.max( score, newScore);
+				
 			}
 		
 			score*=-1;
