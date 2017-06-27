@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import tag.Data;
+import tag.Data.Point;
 
 public class PointFixedPriorityQueue {
 	private int fixedLen;
@@ -25,8 +26,8 @@ public class PointFixedPriorityQueue {
 	}
 	
 	
-	public void offer(PointValue pv){
-		this.list.add(pv);
+	public void offer(Point point,int value){
+		this.list.add(new PointValue(point,value));
 		this.list.sort(this.comparator);
 		while(this.list.size()>this.fixedLen){
 			this.list.remove(0);
@@ -38,10 +39,10 @@ public class PointFixedPriorityQueue {
 		
 	}
 	
-	public PointValue poll(){
+	public Point poll(){
 		try{
-			return this.list.remove(this.list.size()-1);
-		}catch(IndexOutOfBoundsException e){
+			return this.list.remove(this.list.size()-1).point;
+		}catch(IndexOutOfBoundsException | NullPointerException e){
 			return null;
 		}
 	}
