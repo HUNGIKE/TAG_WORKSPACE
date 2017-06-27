@@ -67,7 +67,7 @@ public class MemBoard{
 	
 
 	final private static int[][] OFFSET=new int[][]{{0,-1},{0,1},{-1,0},{1,0}}; 
-	private int getPointValue(int x,int y){
+	private int getPointPriorityValue(int x,int y){
 		int bc=0,wc=0,ec=0;
 		
 		for(int[] offset:OFFSET){
@@ -97,7 +97,7 @@ public class MemBoard{
 			for(int y=0;y<boardHeight;y++){
 				if(data.getGrid(x, y).color!=null)continue;
 				
-				queue.offer(new Point(x,y), getPointValue(x,y) );
+				queue.offer(new Point(x,y), getPointPriorityValue(x,y) );
 			}
 		}
 		

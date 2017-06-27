@@ -15,7 +15,7 @@ public class PointFixedPriorityQueue {
 
 		@Override
 		public int compare(PointValue o1, PointValue o2) {
-			return Integer.compare(o1.value,o2.value);
+			return Integer.compare(o1.priorityValue,o2.priorityValue);
 		}};
 	
 
@@ -26,8 +26,8 @@ public class PointFixedPriorityQueue {
 	}
 	
 	
-	public void offer(Point point,int value){
-		this.list.add(new PointValue(point,value));
+	public void offer(Point point,int priorityValue){
+		this.list.add(new PointValue(point,priorityValue));
 		this.list.sort(this.comparator);
 		while(this.list.size()>this.fixedLen){
 			this.list.remove(0);
@@ -50,11 +50,11 @@ public class PointFixedPriorityQueue {
 	
 	public static class PointValue{
 		public Data.Point point;
-		public int value;
+		public int priorityValue;
 		
-		public PointValue(Data.Point point,int value){
+		public PointValue(Data.Point point,int priorityValue){
 			this.point=point;
-			this.value=value;
+			this.priorityValue=priorityValue;
 		}
 		
 		public PointValue(){}
