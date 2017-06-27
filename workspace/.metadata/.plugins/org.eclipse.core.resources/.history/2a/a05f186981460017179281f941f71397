@@ -1,7 +1,0 @@
-package player;
-
-import Player;
-
-public class SimplePlayer extends Player {
-
-}

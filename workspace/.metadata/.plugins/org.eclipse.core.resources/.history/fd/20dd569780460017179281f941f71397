@@ -1,9 +1,0 @@
-package tag;
-
-public class Controller {
-	private Data data;
-	public Controller(Data data){
-		this.data=data;
-	}
-
-}
