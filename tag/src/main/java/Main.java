@@ -37,11 +37,19 @@ public class Main {
 		players[2]=new RandomPlayer();
 		
 		SimplePlayer simplePlayer=new SimplePlayer();
-		simplePlayer.getNetwork().load("training_ANN.nn");
+		try{
+			simplePlayer.getNetwork().load("training_ANN.nn");
+		}catch(Exception e){
+			System.err.println(e);
+		}
 		players[3]=simplePlayer;
 		
 		CNNPlayer cnnPlayer=new CNNPlayer();
-		cnnPlayer.getNetwork().load("training_CNN.nn");
+		try{
+			cnnPlayer.getNetwork().load("training_CNN.nn");
+		}catch(Exception e){
+			System.err.println(e);
+		}
 		players[4]=cnnPlayer;
 		
 		return players;
@@ -55,7 +63,11 @@ public class Main {
 		players[0]=gtp;
 		
 		CNNPlayer cnnPlayer=new CNNPlayer();
-		cnnPlayer.getNetwork().load("training_CNN.nn");
+		try{
+			cnnPlayer.getNetwork().load("training_CNN.nn");
+		}catch(Exception e){
+			System.err.println(e);
+		}
 		players[1]=cnnPlayer;
 		
 		GUIPlayer guiPlayer=new GUIPlayer();
@@ -65,7 +77,11 @@ public class Main {
 		players[3]=new RandomPlayer();
 		
 		SimplePlayer simplePlayer=new SimplePlayer();
-		simplePlayer.getNetwork().load("training_ANN.nn");
+		try{
+			simplePlayer.getNetwork().load("training_ANN.nn");
+		}catch(Exception e){
+			System.err.println(e);
+		}
 		players[4]=simplePlayer;
 		
 		return players;
