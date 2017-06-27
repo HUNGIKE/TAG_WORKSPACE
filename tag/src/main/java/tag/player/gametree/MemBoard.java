@@ -68,16 +68,23 @@ public class MemBoard{
 
 	final private static int[][] OFFSET=new int[][]{{0,-1},{0,1},{-1,0},{1,0}}; 
 	private int getPointValue(int x,int y){
-		int value=0;
+		int bc=0,wc=0,ec=0;
 		
 		for(int[] offset:OFFSET){
 			Grid grid=this.data.getGrid(x+offset[0], y+offset[1]);
-			if(grid!=null && grid.color!=null){
-				value+=1;
+			if(grid!=null ){
+				if( grid.color==null ){
+					ec+=1;
+				}else if(Data.Color.WHITE.equals(grid.color)){
+					bc+=1;
+				}else{
+					wc+=1;
+				}
 			}
 		}
 		
-		return value;
+		double av=( bc+wc+ec) /3d;
+		return (int)( ( Math.pow(bc-av,2)+Math.pow(ec-av,2)+Math.pow(wc-av,2) )/av*-10000);
 	}
 	
 	
@@ -90,7 +97,7 @@ public class MemBoard{
 			for(int y=0;y<boardHeight;y++){
 				if(data.getGrid(x, y).color!=null)continue;
 				
-				queue.offer(new Point(x,y),getPointValue(x,y));
+				queue.offer(new Point(x,y), getPointValue(x,y) );
 			}
 		}
 		

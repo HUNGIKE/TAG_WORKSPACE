@@ -10,7 +10,7 @@ import tag.exception.OutOfBoardException;
 import tag.player.gametree.PointFixedPriorityQueue.PointValue;
 
 public class GameTreePlayer extends Player {
-	int DEPTH=6,WIDTH=8;
+	int DEPTH=5,WIDTH=8;
 
 	@Override
 	public Point play(Viewer viewer) {
