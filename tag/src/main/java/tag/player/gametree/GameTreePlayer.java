@@ -10,7 +10,7 @@ import tag.exception.OutOfBoardException;
 import tag.player.gametree.PointFixedPriorityQueue.PointValue;
 
 public class GameTreePlayer extends Player {
-	int DEPTH=5,WIDTH=8;
+	int DEPTH=8,WIDTH=11;
 
 	@Override
 	public Point play(Viewer viewer) {
@@ -31,7 +31,7 @@ public class GameTreePlayer extends Player {
 	}
 	
 	private Point runGameTree(int depth,int width,MemBoard board,Data.Color color) throws OutOfBoardException, OperationProhibitedException{
-		int score=Integer.MIN_VALUE;
+		int score=(Integer.MIN_VALUE+1);
 		Point retPoint=new Point(0,0);
 		
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
@@ -55,7 +55,7 @@ public class GameTreePlayer extends Player {
 	
 	private int runGameTree(int depth,int width,MemBoard board,int x,int y,Data.Color color,int alphabeta) throws OutOfBoardException, OperationProhibitedException{
 		
-		int score = Integer.MIN_VALUE;
+		int score =(Integer.MIN_VALUE+1);
 		int boardWidth=board.data.getWidth(),boardHeight=board.data.getHeigth();
 		
 		board.activate(x,y, color);
@@ -67,7 +67,7 @@ public class GameTreePlayer extends Player {
 			Point point=null;
 			while( ( point=breadthQueue.poll())!=null){
 				if(board.data.getGrid(point.x,point.y).color!=null)continue;
-				if(score>alphabeta)break;
+				if(score>=alphabeta)break;
 				
 				int newScore=runGameTree(depth-1,WIDTH,board,point.x,point.y,color.rivalColor(),score*-1);
 				score = Math.max( score, newScore);
