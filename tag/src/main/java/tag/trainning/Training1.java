@@ -87,10 +87,10 @@ public class Training1 {
 		Training1 t1=new Training1();
 		
 		CNNPlayer p1=new CNNPlayer();
-		p1.getNetwork().load(filePath_CNN);
+		p1.getNetwork().createFromFile (filePath_CNN);
 		
 		SimplePlayer p2=new SimplePlayer();
-		p2.getNetwork().load(filePath_ANN);
+		p2.getNetwork().createFromFile (filePath_ANN);
 		
 		RandomPlayer p3=new RandomPlayer();
 		
