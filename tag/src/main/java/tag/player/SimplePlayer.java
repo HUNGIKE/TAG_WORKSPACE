@@ -13,7 +13,7 @@ import tag.Player;
 import tag.Viewer;
 
 public class SimplePlayer extends Player {
-	private static NeuralNetwork neuralNetwork;
+	private NeuralNetwork neuralNetwork;
 	public SimplePlayer(){
 		this.neuralNetwork=this.createNetwork();
 	}
