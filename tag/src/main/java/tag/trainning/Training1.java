@@ -16,6 +16,7 @@ import tag.Player;
 import tag.player.CNNPlayer;
 import tag.player.RandomPlayer;
 import tag.player.SimplePlayer;
+import tag.player.gametree.GameTreePlayer;
 import tag.ui.MainFrame;
 
 
@@ -50,7 +51,7 @@ public class Training1 {
 
 		double score=0;
 		
-		for(int i=0;i<10;i++){
+		for(int i=0;i<1;i++){
 			this.host.run();
 			int blackScore=this.host.getController().getScore(Color.BLACK),
 				whiteScore=this.host.getController().getScore(Color.WHITE);
@@ -79,8 +80,6 @@ public class Training1 {
 	}
 
 	public static void main(String[] args) {
-		String filePath="training1.nn";
-
 
 		String filePath_ANN="training_ANN.nn";
 		String filePath_CNN="training_CNN.nn";
@@ -91,13 +90,14 @@ public class Training1 {
 		p1.getNetwork().load(filePath_CNN);
 		
 		SimplePlayer p2=new SimplePlayer();
-		p2.getNetwork().load(filePath);
+		p2.getNetwork().load(filePath_ANN);
 		
 		RandomPlayer p3=new RandomPlayer();
 		
+		GameTreePlayer p4=new GameTreePlayer();
 		
-		t1.setTrainPlayer(p2);
-		t1.setRivalPlayer(p3);
+		t1.setTrainPlayer(p1);
+		t1.setRivalPlayer(p4);
 		
 		
 		t1.train();
