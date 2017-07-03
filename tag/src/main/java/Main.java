@@ -64,7 +64,7 @@ public class Main {
 		
 		CNNPlayer cnnPlayer=new CNNPlayer();
 		try{
-			cnnPlayer.getNetwork().load("training_CNN.nn");
+			cnnPlayer.getNetwork().createFromFile("training_CNN.nn");
 		}catch(Exception e){
 			System.err.println(e);
 		}
@@ -78,7 +78,7 @@ public class Main {
 		
 		SimplePlayer simplePlayer=new SimplePlayer();
 		try{
-			simplePlayer.getNetwork().load("training_ANN.nn");
+			simplePlayer.getNetwork().createFromFile("training_ANN.nn");
 		}catch(Exception e){
 			System.err.println(e);
 		}
