@@ -5,9 +5,13 @@ import java.util.LinkedList;
 import org.jenetics.BitChromosome;
 import org.jenetics.BitGene;
 import org.jenetics.Chromosome;
+import org.jenetics.Crossover;
 import org.jenetics.DoubleChromosome;
 import org.jenetics.DoubleGene;
 import org.jenetics.Genotype;
+import org.jenetics.MultiPointCrossover;
+import org.jenetics.Mutator;
+import org.jenetics.PartiallyMatchedCrossover;
 import org.jenetics.engine.Engine;
 import org.jenetics.engine.EvolutionResult;
 import org.jenetics.util.Factory;
@@ -83,14 +87,20 @@ public class test {
 		
 		for(int i=0;i<300;i++){
 			
-			list.add( DoubleChromosome.of(-100,100,this.neuralNetwork.getWeights().length) );
+			list.add( DoubleChromosome.of(-10,10,this.neuralNetwork.getWeights().length) );
 			
 		}
 		
 		
 		Factory<Genotype<DoubleGene>> gtf = Genotype.of(list );		
-		Engine<DoubleGene, Double> engine = Engine.builder(this::eval, gtf).build();		
-		Genotype<DoubleGene> result = engine.stream().limit(1000).collect(EvolutionResult.toBestGenotype());
+		Engine<DoubleGene, Double> engine = Engine.builder(this::eval, gtf).
+		alterers(
+				new MultiPointCrossover<>(0.3), 
+				new Mutator<>(0.5))
+		.build();
+		
+		
+		Genotype<DoubleGene> result = engine.stream().limit(3000).collect(EvolutionResult.toBestGenotype());
 	 
 	    System.out.println("Result:\n" + result);
 
