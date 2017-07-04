@@ -12,19 +12,22 @@ import org.jenetics.engine.Engine;
 import org.jenetics.engine.EvolutionResult;
 import org.jenetics.util.Factory;
 import org.neuroph.core.NeuralNetwork;
+import org.neuroph.core.data.DataSet;
+import org.neuroph.core.data.DataSetRow;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.Perceptron;
 
 public class test {
 	
-	private static NeuralNetwork neuralNetwork = new MultiLayerPerceptron(2,2,2);
+	public NeuralNetwork neuralNetwork = new MultiLayerPerceptron(2,3,1);
 	
 	
-	private static double estimatedFunc(double x1,double x2){
-		return ( Math.pow(x1,2)+Math.pow(x2,2)*x1/100)/2;
+	private double estimatedFunc(double x1,double x2){
+		// return x1+x2;
+		return Math.pow(x1,3)+Math.pow(x2,2)+x1;
 	}
 	
-	private static synchronized Double eval(Genotype<DoubleGene> gt) {
+	private synchronized Double eval(Genotype<DoubleGene> gt) {
 			
 			
 			
@@ -33,17 +36,20 @@ public class test {
 			double bias=0;
 			
 			for(int i=0;i<10000;i++){
-				double x1=(int)(i/100),x2=i%100;
+				double x1=(int)(i/100)+1,x2=i%100+1;
+				// double x1=Math.random()*100,x2=Math.random()*100;
 				
-				neuralNetwork.setInput(x1/100,x2/100);
+				neuralNetwork.setInput( intputNormailize(x1,x2) );
 				neuralNetwork.calculate();
-				double[] output=neuralNetwork.getOutput();
+				double output=outputNormalize( neuralNetwork.getOutput()[0] );
 				
-				
-				bias+=( Math.abs(x1-output[0]*10000)+Math.abs(x2-output[1]*10000) );
+				// System.out.println("output[0]="+(output[0]*10000d)+",est fun="+estimatedFunc(x1,x2));
+				bias+=Math.abs( output - estimatedFunc(x1,x2) );
 				
 			}
 			
+			
+			// System.out.println(bias/10000);
 			return -1d*bias;
 		
 		
@@ -52,43 +58,103 @@ public class test {
         //return (int) gt.getChromosome().as(DoubleChromosome.class).byteValue(2);
     }
 	
+	public DataSet getTrainingSet(){
+		DataSet trainingSet = new DataSet(2, 1);
 
-	public static void main(String[] args) {
 		
+		for(int i=0;i<2000000;i++){
+			//double x1=(int)(i/100),x2=i%100;
+			double x1=Math.random()*100,x2=Math.random()*100;
+			double y=estimatedFunc(x1,x2)/1010100;
+			trainingSet.addRow(new DataSetRow( intputNormailize( x1,x2 ),new double[]{ y }));
+		
+		}
+		
+		
+		
+		
+		return trainingSet;
+	}
+	
+	
+	public void taringByGA(){
 		
 		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
 		
 		for(int i=0;i<300;i++){
 			
-			list.add( DoubleChromosome.of(-100,100,12) );
+			list.add( DoubleChromosome.of(-100,100,this.neuralNetwork.getWeights().length) );
 			
 		}
 		
 		
-		
 		Factory<Genotype<DoubleGene>> gtf = Genotype.of(list );		
-		Engine<DoubleGene, Double> engine = Engine.builder(test::eval, gtf).build();		
+		Engine<DoubleGene, Double> engine = Engine.builder(this::eval, gtf).build();		
 		Genotype<DoubleGene> result = engine.stream().limit(1000).collect(EvolutionResult.toBestGenotype());
 	 
-	    System.out.println("Hello World:\n" + result);
+	    System.out.println("Result:\n" + result);
 
-	    
+		this.neuralNetwork.setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
+		
 
-		neuralNetwork.setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
-	    for(int j=0;j<10;j++){
+		
+	}
+	
+	private double[] intputNormailize(double ... input){
+		input[0]/=100;
+		input[1]/=100;
+		
+		return input;
+		
+	}
+	
+	private double outputNormalize(double output){
+		return output*1010100;
+	}
+	
+	
+	public void taringByBP(){
+		this.neuralNetwork.learn(getTrainingSet());
+	}
+	
+	public void estimate(){
 
+		
+		
+	    for(int i=0;i<=10000;i++){
 			double x1=Math.random()*100,x2=Math.random()*100;
-	    	double y1=estimatedFunc(x1,x2);
+	    	double y1=this.estimatedFunc(x1,x2);
 	    	
-	    	neuralNetwork.setInput(x1/100,x2/100);
+	    	neuralNetwork.setInput( intputNormailize(x1,x2) );
 	    	neuralNetwork.calculate();
 	    	
-	    	double[] output=neuralNetwork.getOutput();
+	    	double output=this.outputNormalize( neuralNetwork.getOutput()[0] );
+	    	
+	    	double bias=output-y1;
 	    	
 	    	System.out.println("x1="+x1+" , x2="+x2);
-	    	System.out.println("y1="+output[0]*10000+",y2="+output[1]*10000);
+	    	System.out.println("output="+ output +",eval func="+y1);
+	    	System.out.println("bias="+bias);
+	    	
+	    	
+	    	System.out.println();
 	    	System.out.println();
 	    }
+		
+		
+	}
+	
+	
+
+	public static void main(String[] args) {
+		test test=new test();
+		
+		test.taringByGA();
+		
+		// test.neuralNetwork.randomizeWeights();
+		// test.taringByBP();
+		
+		test.estimate();
 		
 		
 	}
