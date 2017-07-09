@@ -30,7 +30,7 @@ public class GameTreePlayer extends Player {
 		AtomicReference<Point> pointRef=new AtomicReference<Point>();
 		
 		try {
-			runGameTree(DEPTH,WIDTH,mem,viewer.getColor(),Integer.MAX_VALUE,pointRef);
+			runGameTree(DEPTH,WIDTH,mem,viewer.getColor(),Integer.MIN_VALUE+1,Integer.MAX_VALUE,pointRef);
 		} catch (OutOfBoardException | OperationProhibitedException e) {
 			e.printStackTrace();
 			return new Point(0,0);
@@ -40,7 +40,7 @@ public class GameTreePlayer extends Player {
 	}
 
 	
-	private int runGameTree(int depth,int width,MemBoard board,Data.Color color,int alphabeta,AtomicReference<Point> pointRef) throws OutOfBoardException, OperationProhibitedException{
+	private int runGameTree(int depth,int width,MemBoard board,Data.Color color,int alpha,int beta,AtomicReference<Point> pointRef) throws OutOfBoardException, OperationProhibitedException{
 		if(depth==0)return countScore(board,color);		
 
 		PointFixedPriorityQueue breadthQueue=board.getPriorityPoint(width);
@@ -52,15 +52,16 @@ public class GameTreePlayer extends Player {
 		){
 			
 			board.activate(point.x,point.y, color);
-			int newScore=runGameTree(depth-1,width,board,color.rivalColor(),score*-1,null)*-1;
+			int newScore=runGameTree(depth-1,width,board,color.rivalColor(),beta*-1,alpha*-1,null)*-1;
 			board.rollback();
 			
 			if( newScore>score ){
 				score=newScore;
 				if(pointRef!=null){ pointRef.set(point);}
-				if(score>=alphabeta)break;
+				
+				alpha=Math.max(alpha,score);
+				if(alpha>=beta)break;
 			}
-			
 		}
 		return score;
 	}
