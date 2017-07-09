@@ -12,6 +12,13 @@ import tag.player.gametree.PointFixedPriorityQueue.PointValue;
 public class GameTreePlayer extends Player {
 	int DEPTH=8,WIDTH=11;
 
+	public GameTreePlayer(int DEPTH,int WIDTH){
+		this.DEPTH=DEPTH;
+		this.WIDTH=WIDTH;
+	}
+	
+	public GameTreePlayer(){}
+	
 	@Override
 	public Point play(Viewer viewer) {
 		MemBoard mem=new MemBoard(viewer.getWidth(),viewer.getHeigth());
