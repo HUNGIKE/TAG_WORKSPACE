@@ -44,7 +44,7 @@ public class GameTreePlayer extends Player {
 		if(depth==0)return countScore(board,color);		
 
 		PointFixedPriorityQueue breadthQueue=board.getPriorityPoint(width);
-		int score =(Integer.MIN_VALUE+1);
+		int score =Integer.MIN_VALUE;
 		Point point=null;
 
 		while( ( point=breadthQueue.poll() )!=null && 
