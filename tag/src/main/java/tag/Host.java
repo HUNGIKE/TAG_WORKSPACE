@@ -20,8 +20,13 @@ public class Host {
 	Player[] player=new Player[2];
 	
 	
-	public Host(){
-		this.data=new Data(10,10);
+	
+	public Host() {
+		this(10,10);
+	}
+	
+	public Host(int w,int h){
+		this.data=new Data(w,h);
 		this.viewer=new Viewer(this.data);
 		this.controller=new Controller(data);
 	}

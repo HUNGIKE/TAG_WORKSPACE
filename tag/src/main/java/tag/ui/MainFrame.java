@@ -43,7 +43,14 @@ public class MainFrame extends JFrame{
 
 	private ArrayBlockingQueue<Data.Point> point;
 	
-	public MainFrame(){
+	private int w,h;
+	
+	public MainFrame() {
+		this(10, 10);
+	}
+	
+	public MainFrame(int w,int h){
+		this.w=w;this.h=h;
 		this.point=new ArrayBlockingQueue(1);
 		this.setLayout(null);
 		
@@ -87,7 +94,7 @@ public class MainFrame extends JFrame{
 		this.controlPanel.setSize(500,100);
 		this.controlPanel.setLocation(10,10);
 		
-		this.boardpanel=new BoardPanel(10,10){
+		this.boardpanel=new BoardPanel(w,h){
 
 			@Override
 			protected void GridClick(int x, int y) {

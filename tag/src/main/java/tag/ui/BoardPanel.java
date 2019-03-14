@@ -95,7 +95,6 @@ public abstract class BoardPanel extends JPanel{
 			
 
 			this.setSize(5,5);
-			this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1) );
 			this.setBackground(Color.WHITE);
 		}
 		
@@ -112,17 +111,28 @@ public abstract class BoardPanel extends JPanel{
 		@Override
 		public void paint(Graphics g){
 			super.paint(g);
+			g.setColor(Color.BLACK);
+			this.drawBoardLine(g);
+			
+			
 			if(this.color==null)return;
 			if( !this.isShowChess )return;
 			
 			this.setOpaque(true);
 			
+
 			
 			g.setColor(this.color);
 			g.fillOval(0, 0,this.getWidth(),this.getHeight());
 			g.setColor(Color.BLACK);
 			g.drawOval(0, 0,this.getWidth(),this.getHeight());
 			
+			
+		}
+		
+		private void drawBoardLine(Graphics g) {
+			g.drawLine(this.getWidth()/2,0, this.getWidth()/2, this.getHeight());
+			g.drawLine(0,this.getHeight()/2, this.getWidth(), this.getHeight()/2);
 			
 		}
 		
