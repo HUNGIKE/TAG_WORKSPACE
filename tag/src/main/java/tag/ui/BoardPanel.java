@@ -29,6 +29,18 @@ public abstract class BoardPanel extends JPanel{
 		}
 	}
 	
+	public void reset() {
+		for(Grid[] ga:this.grid) {
+			for(Grid grid:ga) {
+				grid.setColor(null);
+				grid.repaint();
+			}
+			
+		}
+		
+	}
+	
+	
 	
 	public void clean(List<Data.Point> cleanPoint){
 		

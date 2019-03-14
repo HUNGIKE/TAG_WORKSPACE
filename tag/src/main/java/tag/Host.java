@@ -75,7 +75,12 @@ public class Host {
 		return this.round;
 	}
 	
-	public synchronized void run(){
+	public void resetGame() {
+		this.controller.setGameTerminated(true);
+	}
+
+	
+	public void run(){
 		
 		
 		this.round=0;
@@ -83,42 +88,50 @@ public class Host {
 		
 		int p=0;
 		
-		while( ! this.controller.isGameTerminated() ){
-			if(this.mainframe!=null){
-				this.mainframe.setRoundString(this.round,this.maximusRound);
-			}
-			
-			Player ply=this.player[p];
-			this.viewer.setColor(playerColor[p]);
-			
-			try {
-				Data.Point retP=ply.play(this.viewer);
-				if(retP==null)throw new OperationProhibitedException();
-				
-				List<Data.Point> closeSet=this.controller.setValue(retP.x,retP.y,this.viewer.getColor());				
-				if(this.mainframe!=null)this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor( this.viewer.getColor() ) );
+		while (!this.controller.isGameTerminated()) {
+			synchronized (this) {
 
-				if( ! closeSet.isEmpty()){
-					this.controller.clean(closeSet);
-					if(this.mainframe!=null)this.mainframe.Clean(closeSet);
+				if (this.mainframe != null) {
+					this.mainframe.setRoundString(this.round, this.maximusRound);
 				}
-			} catch (OutOfBoardException | OperationProhibitedException e) {
-				continue;
-			}finally{
-				if(this.mainframe!=null){
-					this.mainframe.updadteFrame(this.viewer);
+
+				Player ply = this.player[p];
+				this.viewer.setColor(playerColor[p]);
+
+				try {
+					Data.Point retP = ply.play(this.viewer);
+					if (retP == null)
+						throw new OperationProhibitedException();
+
+					List<Data.Point> closeSet = this.controller.setValue(retP.x, retP.y, this.viewer.getColor());
+					if (this.mainframe != null)
+						this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor(this.viewer.getColor()));
+
+					if (!closeSet.isEmpty()) {
+						this.controller.clean(closeSet);
+						if (this.mainframe != null)
+							this.mainframe.Clean(closeSet);
+					}
+				} catch (OutOfBoardException | OperationProhibitedException e) {
+					continue;
+				} finally {
+					if (this.mainframe != null) {
+						this.mainframe.updadteFrame(this.viewer);
+					}
 				}
-			}
-			
-			
-			p=(p+1)%2;
-			if(p==0){ this.round++; }
-			
-			if(this.maximusRound>0 && this.round>=this.maximusRound){
-				this.controller.setGameTerminated(true);
+
+				p = (p + 1) % 2;
+				if (p == 0) {
+					this.round++;
+				}
+
+				if (this.maximusRound > 0 && this.round >= this.maximusRound) {
+					this.controller.setGameTerminated(true);
+				}
 			}
 		}
 		
+		this.mainframe.enableResetButton();
 		
 		// System.out.print("Score: BLACK "+this.controller.getScore(Data.Color.BLACK));
 		// System.out.println(",WHITE "+this.controller.getScore(Data.Color.WHITE));

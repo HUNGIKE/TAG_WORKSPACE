@@ -49,6 +49,11 @@ public class MainFrame extends JFrame{
 		this(10, 10);
 	}
 	
+	public void enableResetButton() {
+		this.controlPanel.reset.setEnabled(true);
+	}
+	
+	
 	public MainFrame(int w,int h){
 		this.w=w;this.h=h;
 		this.point=new ArrayBlockingQueue(1);
@@ -56,9 +61,19 @@ public class MainFrame extends JFrame{
 		
 		this.controlPanel=new ControlPanel(){
 
+			private Thread gameThread;
+
 			@Override
 			public void ResetClick() {
-				//To Do 
+				if(!this.reset.isEnabled())return;
+				MainFrame.this.host.resetGame();
+				
+				MainFrame.this.boardpanel.reset();
+				this.list[0].setEnabled(true);
+				this.list[1].setEnabled(true);
+				this.start.setEnabled(true);
+				this.reset.setEnabled(false);
+				
 				
 			}
 
@@ -79,12 +94,13 @@ public class MainFrame extends JFrame{
 				MainFrame.this.boardpanel.setEnabled(true);
 				MainFrame.this.boardpanel.setVisible(true);
 				
-				new Thread(){
+				gameThread = new Thread(){
 					public void run(){
 						MainFrame.this.host.run();
 					}
 					
-				}.start();
+				};
+				gameThread.start();
 
 			}
 			

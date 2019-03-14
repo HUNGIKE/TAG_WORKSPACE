@@ -15,6 +15,7 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException {
 		
 		Host host=new Host(15,15);
+		host.setMaximusRound(3);
 		host.setGUI(new MainFrame(15,15));
 		
 		host.setPlayerListItem(0, getPlayerList1(host));
