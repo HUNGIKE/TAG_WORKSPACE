@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import tag.Data.Point;
 import tag.exception.OperationProhibitedException;
 import tag.exception.OutOfBoardException;
@@ -130,6 +132,11 @@ public class Host {
 				}
 			}
 		}
+		
+		int b_count=this.controller.getScore(Data.Color.BLACK);
+		int w_count=this.controller.getScore(Data.Color.WHITE);
+		
+		JOptionPane.showMessageDialog(this.mainframe,"score - BLACK: "+b_count+" v.s WHITE: "+w_count);
 		
 		this.mainframe.enableResetButton();
 		
