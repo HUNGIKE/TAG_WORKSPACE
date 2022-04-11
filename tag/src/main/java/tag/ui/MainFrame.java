@@ -153,7 +153,7 @@ public class MainFrame extends JFrame{
 		this.boardpanel.setColor(x, y, color);
 	}
 	
-	public void Clean(List<Data.Point> cleanPoint){
+	public void clean(List<Data.Point> cleanPoint){
 		this.boardpanel.clean(cleanPoint);
 	}
 	

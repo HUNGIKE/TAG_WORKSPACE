@@ -102,14 +102,17 @@ public class Host {
 
 				try {
 					Data.Point retP = ply.play(this.viewer);
-					if (retP == null)
-						throw new OperationProhibitedException();
+					if (retP == null) throw new OperationProhibitedException();
 
 					List<Data.Point> closeSet = this.controller.setValue(retP.x, retP.y, this.viewer.getColor());
-					if (this.mainframe != null)
+					this.controller.clean(closeSet); 
+					
+					
+					if (this.mainframe != null) {
+						this.mainframe.clean(closeSet);
 						this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor(this.viewer.getColor()));
+					}
 
-					if (!closeSet.isEmpty()) { this.controller.clean(closeSet); }
 				} catch (OutOfBoardException | OperationProhibitedException e) {
 					continue;
 				} finally {
@@ -119,9 +122,7 @@ public class Host {
 				}
 
 				p = (p + 1) % 2;
-				if (p == 0) {
-					this.round++;
-				}
+				if (p == 0) { this.round++; }
 
 				if (this.maximusRound > 0 && this.round >= this.maximusRound) {
 					this.controller.setGameTerminated(true);

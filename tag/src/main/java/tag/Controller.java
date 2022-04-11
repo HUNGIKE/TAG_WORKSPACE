@@ -99,6 +99,7 @@ public class Controller {
 	
 	
 	public void clean(List<Point> points){
+		if(points.isEmpty())return; 
 		// System.out.println("clean:");
 		for(Point p:points){
 			// System.out.print("   "+p.x+","+p.y);
