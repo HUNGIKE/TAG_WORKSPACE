@@ -109,11 +109,7 @@ public class Host {
 					if (this.mainframe != null)
 						this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor(this.viewer.getColor()));
 
-					if (!closeSet.isEmpty()) {
-						this.controller.clean(closeSet);
-						if (this.mainframe != null)
-							this.mainframe.Clean(closeSet);
-					}
+					if (!closeSet.isEmpty()) { this.controller.clean(closeSet); }
 				} catch (OutOfBoardException | OperationProhibitedException e) {
 					continue;
 				} finally {
