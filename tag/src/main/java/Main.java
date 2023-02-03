@@ -13,23 +13,23 @@ import tag.ui.MainFrame;
 public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
-		
 		Host host=new Host(15,15);
 		host.setMaximusRound(100);
-		host.setGUI(new MainFrame(15,15));
 		
-		host.setPlayerListItem(0, getPlayerList1(host));
-		host.setPlayerListItem(1, getPlayerList2(host));
+		MainFrame frame = new MainFrame(15,15);
+		frame.setHost(host);
+		frame.setPlayerListItem(0, getPlayerList1(host, frame));
+		frame.setPlayerListItem(1, getPlayerList2(host, frame));
 
 
 	}
 	
 	
-	public static Player[] getPlayerList1(Host host){
+	public static Player[] getPlayerList1(Host host,MainFrame frame){
 		Player[] players=new Player[5];
 		
 		GUIPlayer guiPlayer=new GUIPlayer();
-		guiPlayer.setGUI(host.getGUI());
+		guiPlayer.setGUI(frame);
 		players[0]=guiPlayer;
 		
 		GameTreePlayer gtp=new GameTreePlayer();
@@ -56,7 +56,7 @@ public class Main {
 		return players;
 	}
 	
-	public static Player[] getPlayerList2(Host host){
+	public static Player[] getPlayerList2(Host host,MainFrame frame){
 		Player[] players=new Player[5];
 		
 		
@@ -72,7 +72,7 @@ public class Main {
 		players[1]=cnnPlayer;
 		
 		GUIPlayer guiPlayer=new GUIPlayer();
-		guiPlayer.setGUI(host.getGUI());
+		guiPlayer.setGUI(frame);
 		players[2]=guiPlayer;
 		
 		players[3]=new RandomPlayer();

@@ -22,6 +22,7 @@ public class GameTreePlayer extends Player {
 	
 	public GameTreePlayer(){}
 	
+	
 	@Override
 	public Point play(Viewer viewer) {
 		MemBoard mem=new MemBoard(viewer.getWidth(),viewer.getHeigth());

@@ -13,7 +13,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -174,7 +176,7 @@ public class MainFrame extends JFrame{
 	public void updadteFrame(Viewer v){
 		int w=v.getWidth();
 		int h=v.getHeigth();
-		
+		Set<Color> newColorList=new HashSet();
 		
 		for(int x=0;x<w;x++){
 			for(int y=0;y<h;y++){
@@ -185,6 +187,7 @@ public class MainFrame extends JFrame{
 				if( (newColor!=null && !newColor.equals(oldColor) ) ||
 					(oldColor!=null && !oldColor.equals(newColor) )  ){
 					this.setColor(x, y, newColor);
+					
 				}
 			}
 			

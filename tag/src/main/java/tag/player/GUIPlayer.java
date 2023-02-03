@@ -1,6 +1,7 @@
 package tag.player;
 
 import java.awt.Color;
+import java.util.List;
 
 import tag.Data;
 import tag.Data.Grid;
@@ -18,6 +19,18 @@ public class GUIPlayer extends Player {
 	
 	public void setGUI(MainFrame frame){
 		this.frame=frame;
+	}
+	
+	@Override
+	public void update(Viewer v,List<Data.Point> closeSet) {
+		this.frame.clean(closeSet);
+		this.update(v);
+	}
+	
+	@Override
+	public void update(Viewer v) {
+		this.frame.setRoundString(v.getGameInfo().round, v.getGameInfo().maximusRound);
+		this.frame.updadteFrame(v);
 	}
 	
 	@Override

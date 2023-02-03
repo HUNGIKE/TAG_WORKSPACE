@@ -15,7 +15,6 @@ public class Host {
 	Data data;
 	Viewer viewer;
 	Controller controller;
-	MainFrame mainframe;
 	
 	
 	Data.Color[] playerColor=new Data.Color[]{Data.Color.BLACK,Data.Color.WHITE};
@@ -30,25 +29,15 @@ public class Host {
 	public Host(int w,int h){
 		this.data=new Data(w,h);
 		this.viewer=new Viewer(this.data);
+		this.viewer.setGameInfo(new Viewer.GameInfo());
 		this.controller=new Controller(data);
-	}
-	
-	public void setGUI(MainFrame mainframe){
-		this.mainframe=mainframe;
-		this.mainframe.setHost(this);
-	}
-	
-	public MainFrame getGUI(){
-		return this.mainframe;
-	}
+	}	
+
 	
 	public Viewer getViewer(){
 		return this.viewer;
 	}
-	
-	public void setPlayerListItem(int idx,Player[] players){
-		this.mainframe.setPlayerListItem(idx, players);
-	}
+
 	
 	public void setPlayer(Data.Color playerColor,Player player){
 		for(int i=0;i<this.playerColor.length;i++){
@@ -64,17 +53,19 @@ public class Host {
 		return this.controller;
 	}
 	
-	private int maximusRound=0;
+	
 	public void setMaximusRound(int maximusRound){
-		this.maximusRound=maximusRound;
+		this.viewer.getGameInfo().maximusRound = maximusRound;
 	}
 	public int getMaximusRound(){
-		return this.maximusRound;
+		return this.viewer.getGameInfo().maximusRound;
 	}
 	
-	private int round=0;
+	public void setRound(int round) {
+		this.viewer.getGameInfo().round = round;
+	}
 	public int getRound(){
-		return this.round;
+		return this.viewer.getGameInfo().round;
 	}
 	
 	public void resetGame() {
@@ -85,7 +76,7 @@ public class Host {
 	public void run(){
 		
 		
-		this.round=0;
+		this.setRound(0);
 		this.controller.reset();
 		
 		int p=0;
@@ -93,49 +84,34 @@ public class Host {
 		while (!this.controller.isGameTerminated()) {
 			synchronized (this) {
 
-				if (this.mainframe != null) {
-					this.mainframe.setRoundString(this.round, this.maximusRound);
-				}
-
 				Player ply = this.player[p];
 				this.viewer.setColor(playerColor[p]);
 
+				List<Data.Point> closeSet = null;
 				try {
 					Data.Point retP = ply.play(this.viewer);
 					if (retP == null) throw new OperationProhibitedException();
 
-					List<Data.Point> closeSet = this.controller.setValue(retP.x, retP.y, this.viewer.getColor());
+					closeSet = this.controller.setValue(retP.x, retP.y, this.viewer.getColor());
 					this.controller.clean(closeSet); 
-					
-					
-					if (this.mainframe != null) {
-						this.mainframe.clean(closeSet);
-						this.mainframe.setColor(retP.x, retP.y, this.mainframe.toGUIColor(this.viewer.getColor()));
-					}
 
 				} catch (OutOfBoardException | OperationProhibitedException e) {
 					continue;
 				} finally {
-					if (this.mainframe != null) {
-						this.mainframe.updadteFrame(this.viewer);
+					for(Player player:this.player) {
+						player.update(this.viewer,closeSet);
 					}
+					
 				}
 
 				p = (p + 1) % 2;
-				if (p == 0) { this.round++; }
+				if (p == 0) { this.setRound(this.getRound()+1); }
 
-				if (this.maximusRound > 0 && this.round >= this.maximusRound) {
+				if (this.getMaximusRound() > 0 && this.getRound() >= this.getMaximusRound()) {
 					this.controller.setGameTerminated(true);
 				}
 			}
 		}
-		
-		int b_count=this.controller.getScore(Data.Color.BLACK);
-		int w_count=this.controller.getScore(Data.Color.WHITE);
-		
-		JOptionPane.showMessageDialog(this.mainframe,"score - BLACK: "+b_count+" v.s WHITE: "+w_count);
-		
-		this.mainframe.enableResetButton();
 		
 		// System.out.print("Score: BLACK "+this.controller.getScore(Data.Color.BLACK));
 		// System.out.println(",WHITE "+this.controller.getScore(Data.Color.WHITE));

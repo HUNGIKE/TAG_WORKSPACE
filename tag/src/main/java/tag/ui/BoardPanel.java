@@ -43,6 +43,7 @@ public abstract class BoardPanel extends JPanel{
 	
 	
 	public void clean(List<Data.Point> cleanPoint){
+		if(cleanPoint==null)return;
 		
 		for(int i=0;i<3;i++){
 			for(Data.Point point:cleanPoint){
