@@ -3,10 +3,10 @@
 ## 1) Repository purpose (high-level)
 This repository is a Java workspace with two Maven modules:
 
-- `tag/`: the main game project (a board game engine + player framework, with AI-related dependencies).
-- `sandbox/`: experimental code for neural networks / genetic algorithm training experiments.
+- `tag/`: the main board game project (engine, rule logic, players, UI, training utilities).
+- `sandbox/`: experimental neural-network / genetic-algorithm code.
 
-There is also a root-level `README.md` with a minimal description.
+The root-level `README.md` is intentionally minimal; this document is the detailed quick-context file for future LLM edits.
 
 ---
 
@@ -15,6 +15,7 @@ There is also a root-level `README.md` with a minimal description.
 ```text
 TAG_WORKSPACE/
 ├─ README.md
+├─ REPO_OVERVIEW_FOR_LLM.md
 ├─ brief.jpg
 ├─ tag/
 │  ├─ pom.xml
@@ -28,7 +29,12 @@ TAG_WORKSPACE/
 │        ├─ Data.java
 │        ├─ Host.java
 │        ├─ Player.java
-│        └─ Viewer.java
+│        ├─ Viewer.java
+│        ├─ exception/
+│        ├─ player/
+│        │  └─ gametree/
+│        ├─ trainning/
+│        └─ ui/
 └─ sandbox/
    ├─ pom.xml
    └─ src/main/java/sandbox/
@@ -40,186 +46,227 @@ TAG_WORKSPACE/
 
 ## 3) Build system and dependencies
 
-Both subprojects are Maven projects.
+Both modules use Maven and include:
+- `org.beykery:neuroph:2.92`
+- `io.jenetics:jenetics:3.8.0`
 
 ### `tag/pom.xml`
 - `groupId`: `hungike`
 - `artifactId`: `tag`
-- dependencies:
-  - `org.beykery:neuroph:2.92`
-  - `io.jenetics:jenetics:3.8.0`
-- uses `maven-assembly-plugin` to produce an executable **jar-with-dependencies** with main class `Main`.
+- configured with `maven-assembly-plugin` to package an executable `jar-with-dependencies`
+- main class is `Main`
 
 ### `sandbox/pom.xml`
 - `groupId`: `hungike`
 - `artifactId`: `sandbox`
-- dependencies are the same two libraries (`neuroph`, `jenetics`).
 
 ---
 
 ## 4) Main module (`tag`) architecture
 
-## 4.1 Core domain model: `tag.Data`
-`Data` stores the board state.
-
-- `width`, `height`
+### 4.1 Core board model: `tag.Data`
+`Data` owns board state:
+- dimensions (`width`, `height`)
 - `Grid[][] board`
-- nested types:
-  - `Point { int x, y }`
-  - `Grid { Color color }`
-  - `enum Color { BLACK, WHITE }` with `rivalColor()` helper
+- nested domain types: `Point`, `Grid`, `Color`
 
-Key methods:
-- `createBoard()`: initialize board with empty `Grid` objects.
-- `getGrid(x, y)`: returns grid or `null` when out-of-bounds.
-- `setValue(x, y, color)`: set piece color in a cell.
+Core operations:
+- `createBoard()`
+- `getGrid(x,y)` with null-on-out-of-bounds behavior
+- `setValue(x,y,color)`
 
-> Note: `createBoard()` initializes `j` using `this.board.length` instead of `this.height`; this works for square boards but is potentially unsafe for rectangular boards.
+> Caveat: `createBoard()` inner loop uses `this.board.length` as boundary; this is effectively width-based and is safer only when board is square.
 
-## 4.2 Read-only game view: `tag.Viewer`
-`Viewer` wraps a `Data` instance and exposes information to players:
+### 4.2 Read-only game context: `tag.Viewer`
+`Viewer` exposes game state to players without handing out the controller directly:
+- board accessors
+- current turn color
+- game metadata (`GameInfo.round`, `GameInfo.maximusRound`)
 
-- current player color (`color`)
-- game metadata (`GameInfo`), including:
-  - `round`
-  - `maximusRound` (max rounds)
+### 4.3 Player contract: `tag.Player`
+Abstract extension point:
+- required: `play(Viewer v)`
+- optional post-move hooks: `update(...)`
 
-Typical usage:
-- players receive `Viewer` in `play(Viewer v)` and choose next move based on visible state.
+### 4.4 Rule controller: `tag.Controller`
+`Controller` enforces legal moves and clear/capture logic:
+- validate move position and emptiness
+- place stone
+- recursively detect closed regions (`tryToCollectClosedSet`)
+- clear captured points (`clean`)
+- score by color (`getScore`)
 
-## 4.3 Player abstraction: `tag.Player`
-Abstract base class:
-
-- required: `Data.Point play(Viewer v)`
-- optional hooks:
-  - `update(Viewer v, List<Data.Point> closeSet)`
-  - `update(Viewer v)`
-
-This design allows human, random, rule-based, and NN-based player implementations.
-
-## 4.4 Rule enforcement: `tag.Controller`
-`Controller` owns game-rule logic.
-
-Responsibilities:
-- board reset (`reset`)
-- score calculation (`getScore(Color)`)
-- placing a move (`setValue(x, y, color)`)
-- capture-like closure detection:
-  - `tryToCollectClosedSet(...)`
-  - `clean(List<Point>)` to clear closed regions
-
-Behavior summary:
-1. Validate move is in-bounds and on empty cell.
-2. Place piece.
-3. Check neighbors; if opposite-color regions are fully enclosed (no path to empty), collect/clean them.
-4. If none captured, also test own region closure.
-
-The algorithm is DFS-like recursion over 4-neighbor connectivity.
-
-## 4.5 Game lifecycle / orchestration: `tag.Host`
-`Host` wires together:
+### 4.5 Runtime orchestrator: `tag.Host`
+`Host` composes:
 - `Data`
 - `Viewer`
 - `Controller`
-- two `Player` instances (BLACK/WHITE)
+- two players (`BLACK`/`WHITE`)
 
-Main loop (`run()`):
-1. Reset board and round.
-2. Alternate players.
-3. Ask current player for move via `play(viewer)`.
-4. Apply move through controller.
-5. Notify all players with `update(...)`.
-6. Increase round and terminate at `maximusRound` (if set).
+`run()` loop responsibilities:
+1. reset state
+2. alternate turns
+3. request move from current player
+4. apply rule logic
+5. push `update(...)` notifications to players
+6. terminate on manual flag or max-round bound
 
-`resetGame()` flags termination.
+### 4.6 Entry point: `Main.java`
+Startup defaults:
+- board size `15x15`
+- `maximusRound = 100`
+- UI window creation via `MainFrame`
+- two dropdown player lists (`getPlayerList1`, `getPlayerList2`)
 
-## 4.6 Entry point: `Main.java`
-Current startup flow:
-- Create `Host(15,15)`.
-- Set max rounds to 100.
-- Create `MainFrame` UI and connect host.
-- Build 2 selectable player lists via `getPlayerList1/2`.
-
-Player types referenced in `Main.java`:
+Referenced player implementations:
 - `GUIPlayer`
 - `GameTreePlayer`
 - `RandomPlayer`
-- `SimplePlayer` (loads `training_ANN.nn`)
-- `CNNPlayer` (loads `training_CNN.nn`)
-
-### Important repository gap
-In this checkout, source files for the following packages are **not present**:
-- `tag.player.*`
-- `tag.player.gametree.*`
-- `tag.ui.*`
-- `tag.exception.*`
-
-`Main.java`, `Host.java`, and `Controller.java` import these packages, so a clean source-only build from current files may fail unless those classes are provided elsewhere (e.g., in prebuilt jar, another branch, or omitted files).
+- `SimplePlayer` (uses `training_ANN.nn`)
+- `CNNPlayer` (uses `training_CNN.nn`)
 
 ---
 
-## 5) Sandbox module (`sandbox`) architecture
+## 5) `tag/player` folder detailed overview (requested)
 
-## 5.1 `sandbox/test.java`
-Experiment for NN fitting a synthetic function:
+This folder contains concrete strategy implementations and one search-based submodule.
 
-- estimated target function: `f(x1,x2) = x1^3 + x2^2 + x1`
-- supports two training strategies:
-  - backpropagation (`taringByBP`) on large random dataset
-  - genetic algorithm (`taringByGA`) using Jenetics and network weights as chromosome
-- uses Neuroph `MultiLayerPerceptron`
-- `main` currently randomizes weights, trains by BP, then prints estimation error samples.
+### 5.1 `RandomPlayer`
+- deterministic pseudo-random move picker (seed advanced each turn)
+- repeatedly samples random `(x,y)` until an empty cell is found
+- baseline strategy for comparison/testing
 
-## 5.2 `sandbox/test2.java`
-Small experiment constructing a `ConvolutionalNetwork` with builder API, assigning weights/input, and printing outputs.
+### 5.2 `SimplePlayer`
+- feed-forward NN strategy (`MultiLayerPerceptron(10*10*2, 5, 10*10)`)
+- input encoding maps board into a numeric vector
+- output is interpreted as per-position score; highest valid empty cell is chosen
+- can load pretrained weights from `.nn` file through `getNetwork().createFromFile(...)`
+
+### 5.3 `CNNPlayer`
+- subclass of `SimplePlayer`
+- overrides network creation with a convolutional architecture:
+  - input dimensions `(10,10)` with 2 maps
+  - two convolution layers (`3x3` kernel)
+  - one fully connected output layer
+- still uses `SimplePlayer` move-decoding pipeline
+
+### 5.4 `GUIPlayer`
+- human/UI-driven player
+- delegates move acquisition to `MainFrame.getPoint()`
+- validates clicked point is legal (in-bounds + empty)
+- pushes visual updates (`clean`, board repaint, round text)
+
+### 5.5 `player/gametree` subpackage
+Implements search player and supporting in-memory board simulation.
+
+#### `GameTreePlayer`
+- alpha-beta style negamax search
+- tunables:
+  - `DEPTH` (default 8)
+  - `WIDTH` (default 11 candidate moves per layer)
+- candidate move ordering comes from `MemBoard.getPriorityPoint(...)`
+
+#### `MemBoard`
+- contains mutable simulation board (`Data`) + `Controller`
+- supports:
+  - `copyData(Viewer)` to clone current board
+  - `activate(x,y,color)` to apply move and record reversible actions
+  - `rollback()` to undo move/captures from stack history
+- computes heuristic priority for empty points based on neighbor composition
+
+#### `PointFixedPriorityQueue`
+- fixed-size sorted candidate container
+- keeps top-N move candidates by priority
+- used to bound branching factor (`WIDTH`) in search
+
+### 5.6 Practical note for LLM modifications in `tag/player`
+When editing this area, first decide strategy family:
+- random baseline (`RandomPlayer`)
+- NN scoring (`SimplePlayer` / `CNNPlayer`)
+- search (`GameTreePlayer` + `MemBoard`)
+- human I/O (`GUIPlayer`)
+
+Then validate compatibility with board size assumptions:
+- NN players are currently hardcoded around `10x10` tensor/vector layout.
 
 ---
 
-## 6) Runtime assets / artifacts
+## 6) Other `tag` subpackages
+
+### `tag/exception`
+Custom checked exceptions used by controller/game flow:
+- `TAGException`
+- `OutOfBoardException`
+- `OperationProhibitedException`
+- `CannotFindClosedSetException`
+
+### `tag/ui`
+Swing UI components:
+- `MainFrame` (top-level frame + controls)
+- `BoardPanel` (board rendering/input)
+
+### `tag/trainning`
+- `Training1.java` exists as training-related utility code.
+- folder name is `trainning` (double `n`) in current source.
+
+---
+
+## 7) Sandbox module (`sandbox`) architecture
+
+### 7.1 `sandbox/test.java`
+- defines synthetic target function `x1^3 + x2^2 + x1`
+- includes two training paths:
+  - backpropagation over generated dataset
+  - GA-based weight optimization via Jenetics
+- evaluates and prints prediction error
+
+### 7.2 `sandbox/test2.java`
+- small isolated demo for creating/running a `ConvolutionalNetwork`
+
+---
+
+## 8) Runtime assets / artifacts
 
 In `tag/`:
-- `training_ANN.nn`: serialized NN model used by `SimplePlayer`.
-- `training_CNN.nn`: serialized NN model used by `CNNPlayer`.
-- `tag-0.0.1-SNAPSHOT-jar-with-dependencies.jar`: prebuilt fat jar.
-
-These files suggest the project has been run/trained before, even if some source code is currently missing from this checkout.
+- `training_ANN.nn`: pretrained model for `SimplePlayer`
+- `training_CNN.nn`: pretrained model for `CNNPlayer`
+- `tag-0.0.1-SNAPSHOT-jar-with-dependencies.jar`: fat jar build artifact
 
 ---
 
-## 7) Suggested mental model for future LLM edits
+## 9) Suggested mental model for future LLM edits
 
-When making changes, treat repo as:
+1. **Engine layer**: `Data`, `Viewer`, `Controller`, `Host`, `Player`.
+2. **Strategy/UI layer**: `tag/player/*`, `tag/player/gametree/*`, `tag/ui/*`.
+3. **Support layer**: `tag/exception/*`, `tag/trainning/*`, pretrained `.nn` assets.
+4. **Experimental layer**: `sandbox/*`.
 
-1. **Core board engine layer** (`Data`, `Viewer`, `Controller`, `Host`, `Player`) — mostly complete in source.
-2. **Strategy/UI/extensions layer** (`tag.player.*`, `tag.ui.*`, `tag.exception.*`) — referenced but incomplete/missing in current tree.
-3. **Research playground** (`sandbox`) — separate experiments, not core runtime loop.
-
-Practical strategy:
-- If task touches core rules: work under `tag/src/main/java/tag/`.
-- If task touches UI/player implementations: verify missing sources first before editing.
-- Use `tag` and `sandbox` as independent Maven modules.
+Recommended edit workflow:
+1. identify target layer
+2. confirm board-size assumptions
+3. patch minimal files
+4. run module-local Maven checks when network/plugin resolution is available
 
 ---
 
-## 8) Quick commands (for future maintainers)
+## 10) Quick commands
 
 From repo root:
 
 ```bash
-# Compile main module (may fail if missing source packages are required)
-cd tag && mvn -q test
+# module-level tests
+mvn -q -f tag/pom.xml test
+mvn -q -f sandbox/pom.xml test
 
-# Compile sandbox experiments
-cd sandbox && mvn -q test
+# package runnable fat jar for main project
+mvn -q -f tag/pom.xml package
 ```
-
-If compile fails due to missing classes, confirm whether the missing sources exist in another branch/repo or are expected to come from external binaries.
 
 ---
 
-## 9) Known issues / caveats summary
+## 11) Known code caveats
 
-- Missing source packages referenced by imports (`tag.player`, `tag.ui`, `tag.exception`).
-- `Data#createBoard` inner loop appears width-based, which is only safe for square boards.
-- Some class/method naming typos exist (`getHeigth`, `maximusRound`, `taringByBP/GA`), but these are consistent in current code.
+- `Data#createBoard()` uses width-like boundary in inner loop.
+- naming typos are present but consistent (`getHeigth`, `maximusRound`, `trainning`, `taring*`).
+- some players assume fixed board encoding shapes (not fully dynamic with arbitrary board sizes).
 
