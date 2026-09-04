@@ -14,13 +14,26 @@ import tag.Viewer;
 
 public class SimplePlayer extends Player {
 	private NeuralNetwork neuralNetwork;
+	protected int boardWidth;
+	protected int boardHeight;
+
 	public SimplePlayer(){
+		this(10,10);
+	}
+
+	public SimplePlayer(int w,int h){
+		this.boardWidth=w;
+		this.boardHeight=h;
 		this.neuralNetwork=this.createNetwork();
 	}
 	
 	
 	protected NeuralNetwork createNetwork(){
-		return new MultiLayerPerceptron(10*10*2,5,10*10);
+		return createNetwork(this.boardWidth, this.boardHeight);
+	}
+
+	protected NeuralNetwork createNetwork(int w,int h){
+		return new MultiLayerPerceptron(w*h*2,5,w*h);
 	}
 	
 	public void setNetwork(NeuralNetwork neuralNetwork){
@@ -73,7 +86,8 @@ public class SimplePlayer extends Player {
 			int x=i/h , y=i%h;
 			Color c=v.getValue(x, y);
 			if(c!=null){
-				ret[c.equals(v.getColor())?i:i*2]=1;
+				// Fix #3: 原 i*2 應為 w*h+i (雙平面: 我方/敵方)
+				ret[c.equals(v.getColor())?i:w*h+i]=1;
 			}
 		}
 		

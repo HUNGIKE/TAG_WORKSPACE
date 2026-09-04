@@ -86,17 +86,10 @@ public class test {
 	
 	public void taringByGA(){
 		
-		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
-		
-		for(int i=0;i<300;i++){
-			
-			list.add( DoubleChromosome.of(-10,10,this.neuralNetwork.getWeights().length) );
-			
-		}
-		
-		
-		Factory<Genotype<DoubleGene>> gtf = Genotype.of(list );		
+		// Fix #1 (sandbox): 同 Training1，單條染色體 + populationSize 控制族群大小
+		Factory<Genotype<DoubleGene>> gtf = Genotype.of(DoubleChromosome.of(-10,10,this.neuralNetwork.getWeights().length));
 		Engine<DoubleGene, Double> engine = Engine.builder(this::eval, gtf).
+		populationSize(300).
 		alterers(
 				new MultiPointCrossover<>(0.3), 
 				new Mutator<>(0.5))

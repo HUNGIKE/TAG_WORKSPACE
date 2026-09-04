@@ -33,12 +33,11 @@ public class Training1 {
 		
 		int weightLen=this.trainPlayer.getNetwork().getWeights().length;
 		
-		LinkedList<DoubleChromosome> list=new LinkedList<DoubleChromosome>();
-		for(int i=0;i<30;i++){
-			list.add( DoubleChromosome.of(-1000,1000,weightLen) );
-		}
-		this.gtf=Genotype.of(list );
-		this.engine=Engine.builder(this::eval, this.gtf).build();
+		// Fix #1: 單一個體 = 1 條染色體 (原 30 條是誤把 population 當 chromosome)
+		this.gtf=Genotype.of(DoubleChromosome.of(-1000,1000,weightLen));
+		this.engine=Engine.builder(this::eval, this.gtf)
+			.populationSize(30)
+			.build();
 	}
 	
 	public void setRivalPlayer(Player rivalPlayer){
@@ -50,15 +49,16 @@ public class Training1 {
 		neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
 
 		double score=0;
-		
-		for(int i=0;i<1;i++){
+		// Fix #2: 先前誤上傳為 1 盤，改為多盤平均以壓低隨機性 (原設計應為 N>1)
+		int evalGames = 5;
+		for(int i=0;i<evalGames;i++){
 			this.host.run();
 			int blackScore=this.host.getController().getScore(Color.BLACK),
 				whiteScore=this.host.getController().getScore(Color.WHITE);
 			score+=( blackScore - whiteScore );
 			
 		}
-		System.out.println("total:"+score);
+		System.out.println("total:"+score+" avg:"+(score/evalGames));
 		return score;
 	}
 	
