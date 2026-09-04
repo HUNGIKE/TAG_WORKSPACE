@@ -39,8 +39,8 @@ public class Training1 {
 		
 		int weightLen=this.trainPlayer.getNetwork().getWeights().length;
 		
-		// Fix #1: 單一個體 = 1 條染色體 (原 30 條是誤把 population 當 chromosome)
-		this.gtf=Genotype.of(DoubleChromosome.of(-1000,1000,weightLen));
+		// Fix #1: 單一個體 = 1 條染色體 (原 30 條是誤把 population 當 chromosome)，縮小搜索空間 -100,100
+		this.gtf=Genotype.of(DoubleChromosome.of(-100,100,weightLen));
 		this.engine=Engine.builder(this::eval, this.gtf)
 			.populationSize(30)
 			.build();
@@ -72,7 +72,7 @@ public class Training1 {
 		this.host=new Host();
 		//MainFrame mainframe=new MainFrame();
 		//this.host.setGUI(mainframe);
-		this.host.setMaximusRound(10);
+		this.host.setMaximusRound(20);
 	}
 	
 	public void train(){
@@ -81,7 +81,7 @@ public class Training1 {
 		this.host.setPlayer(Color.WHITE,this.rivalPlayer);
 		
 		
-		Genotype<DoubleGene> result = engine.stream().limit(10).collect(EvolutionResult.toBestGenotype());
+		Genotype<DoubleGene> result = engine.stream().limit(1000).collect(EvolutionResult.toBestGenotype());
 		this.trainPlayer.getNetwork().setWeights(result.chromosome().as(DoubleChromosome.class).toArray());
 	}
 
