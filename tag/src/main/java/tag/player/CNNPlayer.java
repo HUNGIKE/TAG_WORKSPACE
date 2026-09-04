@@ -23,10 +23,11 @@ public class CNNPlayer extends SimplePlayer {
 
 	protected NeuralNetwork createNetwork(int w,int h){
 		Kernel k=new Kernel(3,3);
-		
+		// Deeper: 3 conv layers 8/16/32 maps (2.92 Builder無activation參數，預設Sigmoid，仍加深)
 		ConvolutionalNetwork.Builder cb=new ConvolutionalNetwork.Builder(new Layer2D.Dimensions(w,h),2);
-		cb.withConvolutionLayer(k, 3);
-		cb.withConvolutionLayer(k, 3);
+		cb.withConvolutionLayer(k, 8);
+		cb.withConvolutionLayer(k, 16);
+		cb.withConvolutionLayer(k, 32);
 		cb.withFullConnectedLayer(w*h);
 		return cb.createNetwork();
 	}
