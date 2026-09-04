@@ -87,14 +87,15 @@ public class Training1 {
 		Training1 t1=new Training1();
 		
 		CNNPlayer p1=new CNNPlayer();
-		p1.getNetwork().createFromFile (filePath_CNN);
+		try{ p1.getNetwork().createFromFile (filePath_CNN); }catch(Exception e){ System.err.println("no pretrain CNN, use random: "+e.getMessage()); }
 		
 		SimplePlayer p2=new SimplePlayer();
-		p2.getNetwork().createFromFile (filePath_ANN);
+		try{ p2.getNetwork().createFromFile (filePath_ANN); }catch(Exception e){ System.err.println("no pretrain ANN, use random: "+e.getMessage()); }
 		
 		RandomPlayer p3=new RandomPlayer();
 		
-		GameTreePlayer p4=new GameTreePlayer();
+		// 折衷: 原 depth 8/width 11 過慢，訓練用輕量 GameTree 仍具強度
+		GameTreePlayer p4=new GameTreePlayer(3,5);
 		
 		t1.setTrainPlayer(p1);
 		t1.setRivalPlayer(p4);
@@ -102,8 +103,8 @@ public class Training1 {
 		
 		t1.train();
 		
-		p1.getNetwork().save(filePath_CNN);
-		p2.getNetwork().save(filePath_ANN);
+		try{ p1.getNetwork().save(filePath_CNN); System.out.println("saved "+filePath_CNN); }catch(Throwable e){ System.err.println("save CNN failed (Java21 Neuroph bug): "+e); e.printStackTrace(); }
+		try{ p2.getNetwork().save(filePath_ANN); System.out.println("saved "+filePath_ANN); }catch(Throwable e){ System.err.println("save ANN failed: "+e); }
 
 	}
 
