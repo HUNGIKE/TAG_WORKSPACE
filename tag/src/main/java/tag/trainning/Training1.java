@@ -81,7 +81,7 @@ public class Training1 {
 		this.host.setPlayer(Color.WHITE,this.rivalPlayer);
 		
 		
-		Genotype<DoubleGene> result = engine.stream().limit(50).collect(EvolutionResult.toBestGenotype());
+		Genotype<DoubleGene> result = engine.stream().limit(200).collect(EvolutionResult.toBestGenotype());
 		this.trainPlayer.getNetwork().setWeights(result.chromosome().as(DoubleChromosome.class).toArray());
 	}
 
