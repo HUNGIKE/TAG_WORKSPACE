@@ -1,3 +1,8 @@
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 import org.neuroph.core.NeuralNetwork;
 
 import tag.Data;
@@ -42,18 +47,14 @@ public class Main {
 		players[2]=new RandomPlayer();
 		
 		SimplePlayer simplePlayer=new SimplePlayer(BOARD_W,BOARD_H);
-		try{
-			simplePlayer.getNetwork().createFromFile ("training_ANN.nn");
-		}catch(Exception e){
-			System.err.println(e);
+		if(!tryLoadWeights(simplePlayer.getNetwork(), "training_ANN.nn")){
+			try{ simplePlayer.getNetwork().createFromFile ("training_ANN.nn"); }catch(Exception e){ System.err.println(e); }
 		}
 		players[3]=simplePlayer;
 		
 		CNNPlayer cnnPlayer=new CNNPlayer(BOARD_W,BOARD_H);
-		try{
-			cnnPlayer.getNetwork().createFromFile ("training_CNN.nn");
-		}catch(Exception e){
-			System.err.println(e);
+		if(!tryLoadWeights(cnnPlayer.getNetwork(), "training_CNN.nn")){
+			try{ cnnPlayer.getNetwork().createFromFile ("training_CNN.nn"); }catch(Exception e){ System.err.println(e); }
 		}
 		players[4]=cnnPlayer;
 		
@@ -68,10 +69,8 @@ public class Main {
 		players[0]=gtp;
 		
 		CNNPlayer cnnPlayer=new CNNPlayer(BOARD_W,BOARD_H);
-		try{
-			cnnPlayer.getNetwork().createFromFile("training_CNN.nn");
-		}catch(Exception e){
-			System.err.println(e);
+		if(!tryLoadWeights(cnnPlayer.getNetwork(), "training_CNN.nn")){
+			try{ cnnPlayer.getNetwork().createFromFile("training_CNN.nn"); }catch(Exception e){ System.err.println(e); }
 		}
 		players[1]=cnnPlayer;
 		
@@ -82,14 +81,26 @@ public class Main {
 		players[3]=new RandomPlayer();
 		
 		SimplePlayer simplePlayer=new SimplePlayer(BOARD_W,BOARD_H);
-		try{
-			simplePlayer.getNetwork().createFromFile("training_ANN.nn");
-		}catch(Exception e){
-			System.err.println(e);
+		if(!tryLoadWeights(simplePlayer.getNetwork(), "training_ANN.nn")){
+			try{ simplePlayer.getNetwork().createFromFile("training_ANN.nn"); }catch(Exception e){ System.err.println(e); }
 		}
 		players[4]=simplePlayer;
 		
 		return players;
+	}
+
+	private static boolean tryLoadWeights(NeuralNetwork n, String basePath){
+		String path = basePath + ".weights";
+		File f = new File(path);
+		if(!f.exists()) return false;
+		try(DataInputStream dis = new DataInputStream(new FileInputStream(f))){
+			int len = dis.readInt();
+			double[] w = new double[len];
+			for(int i=0;i<len;i++) w[i]=dis.readDouble();
+			if(w.length==n.getWeights().length){ n.setWeights(w); System.out.println("loaded weights "+path); return true; }
+			System.err.println("weights length mismatch "+path);
+			return false;
+		}catch(IOException e){ System.err.println("load weights failed "+path+": "+e); return false; }
 	}
 
 }
