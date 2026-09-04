@@ -2,12 +2,12 @@ package tag.trainning;
 
 import java.util.LinkedList;
 
-import org.jenetics.DoubleChromosome;
-import org.jenetics.DoubleGene;
-import org.jenetics.Genotype;
-import org.jenetics.engine.Engine;
-import org.jenetics.engine.EvolutionResult;
-import org.jenetics.util.Factory;
+import io.jenetics.DoubleChromosome;
+import io.jenetics.DoubleGene;
+import io.jenetics.Genotype;
+import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
+import io.jenetics.util.Factory;
 import org.neuroph.core.NeuralNetwork;
 
 import tag.Data.Color;
@@ -46,7 +46,7 @@ public class Training1 {
 	
 	public synchronized Double eval(Genotype<DoubleGene> gt){
 		NeuralNetwork neuralNetwork=this.trainPlayer.getNetwork();
-		neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
+		neuralNetwork.setWeights(gt.chromosome().as(DoubleChromosome.class).toArray());
 
 		double score=0;
 		// Fix #2: 測試時誤上傳為 1 盤，訓練時原意為多盤平均以壓低隨機性
@@ -76,7 +76,7 @@ public class Training1 {
 		
 		
 		Genotype<DoubleGene> result = engine.stream().limit(10).collect(EvolutionResult.toBestGenotype());
-		this.trainPlayer.getNetwork().setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
+		this.trainPlayer.getNetwork().setWeights(result.chromosome().as(DoubleChromosome.class).toArray());
 	}
 
 	public static void main(String[] args) {

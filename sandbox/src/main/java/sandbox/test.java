@@ -2,19 +2,19 @@ package sandbox;
 
 import java.util.LinkedList;
 
-import org.jenetics.BitChromosome;
-import org.jenetics.BitGene;
-import org.jenetics.Chromosome;
-import org.jenetics.Crossover;
-import org.jenetics.DoubleChromosome;
-import org.jenetics.DoubleGene;
-import org.jenetics.Genotype;
-import org.jenetics.MultiPointCrossover;
-import org.jenetics.Mutator;
-import org.jenetics.PartiallyMatchedCrossover;
-import org.jenetics.engine.Engine;
-import org.jenetics.engine.EvolutionResult;
-import org.jenetics.util.Factory;
+import io.jenetics.BitChromosome;
+import io.jenetics.BitGene;
+import io.jenetics.Chromosome;
+import io.jenetics.Crossover;
+import io.jenetics.DoubleChromosome;
+import io.jenetics.DoubleGene;
+import io.jenetics.Genotype;
+import io.jenetics.MultiPointCrossover;
+import io.jenetics.Mutator;
+import io.jenetics.PartiallyMatchedCrossover;
+import io.jenetics.engine.Engine;
+import io.jenetics.engine.EvolutionResult;
+import io.jenetics.util.Factory;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
@@ -38,7 +38,7 @@ public class test {
 			
 			
 			
-			neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
+			neuralNetwork.setWeights(gt.chromosome().as(DoubleChromosome.class).toArray());
 			
 			double bias=0;
 			
@@ -100,7 +100,7 @@ public class test {
 	 
 	    System.out.println("Result:\n" + result);
 
-		this.neuralNetwork.setWeights(result.getChromosome().as(DoubleChromosome.class).toArray());
+		this.neuralNetwork.setWeights(result.chromosome().as(DoubleChromosome.class).toArray());
 		
 
 		
