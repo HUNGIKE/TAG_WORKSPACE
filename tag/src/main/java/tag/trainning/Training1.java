@@ -49,7 +49,7 @@ public class Training1 {
 		neuralNetwork.setWeights(gt.getChromosome().as(DoubleChromosome.class).toArray());
 
 		double score=0;
-		// Fix #2: 先前誤上傳為 1 盤，改為多盤平均以壓低隨機性 (原設計應為 N>1)
+		// Fix #2: 測試時誤上傳為 1 盤，訓練時原意為多盤平均以壓低隨機性
 		int evalGames = 5;
 		for(int i=0;i<evalGames;i++){
 			this.host.run();

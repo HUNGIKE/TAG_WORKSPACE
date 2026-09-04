@@ -12,9 +12,9 @@ import tag.ui.MainFrame;
 
 public class Main {
 
-	// Fix #4: 統一棋盤尺寸來源，避免 NN 寫死 10x10 與 Host 15x15 不一致
-	private static final int BOARD_W = 15;
-	private static final int BOARD_H = 15;
+	// Fix #4: 參數化棋盤尺寸，訓練時為 10x10 (Host 默認)，15x15 僅為 UI 測試殘留
+	private static final int BOARD_W = 10;
+	private static final int BOARD_H = 10;
 
 	public static void main(String[] args) throws InterruptedException {
 		Host host=new Host(BOARD_W,BOARD_H);
@@ -45,7 +45,7 @@ public class Main {
 		try{
 			simplePlayer.getNetwork().createFromFile ("training_ANN.nn");
 		}catch(Exception e){
-			System.err.println(e + " (board "+BOARD_W+"x"+BOARD_H+" vs saved 10x10,需重訓)");
+			System.err.println(e);
 		}
 		players[3]=simplePlayer;
 		
@@ -53,7 +53,7 @@ public class Main {
 		try{
 			cnnPlayer.getNetwork().createFromFile ("training_CNN.nn");
 		}catch(Exception e){
-			System.err.println(e + " (board "+BOARD_W+"x"+BOARD_H+" vs saved 10x10,需重訓)");
+			System.err.println(e);
 		}
 		players[4]=cnnPlayer;
 		
@@ -71,7 +71,7 @@ public class Main {
 		try{
 			cnnPlayer.getNetwork().createFromFile("training_CNN.nn");
 		}catch(Exception e){
-			System.err.println(e + " (board "+BOARD_W+"x"+BOARD_H+" vs saved 10x10,需重訓)");
+			System.err.println(e);
 		}
 		players[1]=cnnPlayer;
 		
@@ -85,7 +85,7 @@ public class Main {
 		try{
 			simplePlayer.getNetwork().createFromFile("training_ANN.nn");
 		}catch(Exception e){
-			System.err.println(e + " (board "+BOARD_W+"x"+BOARD_H+" vs saved 10x10,需重訓)");
+			System.err.println(e);
 		}
 		players[4]=simplePlayer;
 		
